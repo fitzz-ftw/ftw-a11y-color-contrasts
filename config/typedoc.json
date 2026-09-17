@@ -1,0 +1,19 @@
+{
+  "entryPoints": ["../src4doc/**/*.js"],
+  "entryPointStrategy": "expand",
+  "out": "../docs/api",
+  "excludePrivate": false,
+  "plugin": [
+    "typedoc-plugin-missing-exports"
+  ],
+  "placeInternalsInOwningModule":true,
+  "excludePrivateClassFields": false,
+  "excludeProtected": false,
+  "excludeExternals": true,
+  "jsDocCompatibility": {
+    "exampleTag": true,
+    "defaultTag": true,
+    "inheritDocTag": true,
+    "ignoreUnescapedBraces": true
+}
+}

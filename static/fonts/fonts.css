@@ -1,0 +1,24 @@
+/* --- PAGELLA --- */
+@import url(texgyrepagella/stylestyle.css);
+
+/* --- HEROS --- */
+@import url(texgyreheros/stylesheet.css);
+
+/* --- CURSOR --- */
+@import url(texgyrecursor/stylesheet.css);
+
+/* --- FiraCode --- */
+@import url(fira-code/stylesheet.css);
+
+/* --- FiraMono --- */
+@import url(fira-mono/stylesheet.css);
+
+/* --- FiraSans --- */
+@import url(fira-sans/stylesheet.css);
+
+/* --- FiraSansComp --- */
+@import url(fira-sans-comp/stylesheet.css);
+
+/* --- FiraSansCs --- */
+@import url(fira-sans-cs/stylesheet.css);
+
