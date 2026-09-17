@@ -431,7 +431,13 @@ export class HTMLA11yColorCard extends HTMLElement {
     const para = /** @type {HTMLParagraphElement} */(this.#root.querySelector(".text-content.sample-normal"))
     let fg = /** @type {string} */(para.dataset.fgColor)
     const bg = /** @type {string} */(para.dataset.bgColor)
-    const hslfg = hsl(fg)
+    
+    /**
+     * Description placeholder
+     *
+     * @type {import("culori").Hsl}
+     */
+    const hslfg = /** @type {import("culori").Hsl} */(hsl(fg))
     /**
      * Description placeholder
      *
@@ -470,7 +476,7 @@ export class HTMLA11yColorCard extends HTMLElement {
     para.dataset.fgColor = fg
     const ratio = wcagContrast(bg, fg)
     // console.log("Ratio:", ratio)
-    this.#set_lum_slider(true, hsl(fg).l)
+    this.#set_lum_slider(true, /** @type {import("culori").Hsl} */(hsl(fg)).l)
     this.#updateRatio(para,
       ratio,
       "failed",
@@ -688,7 +694,13 @@ export class HTMLA11yColorCard extends HTMLElement {
     let newBg
     colors.forEach((item, idx) => {
       if (item.classList.contains("sample-normal")) {
-        let fg = hsl(item.dataset.fgColor)
+        
+        /**
+         * Description placeholder
+         *
+         * @type {import("culori").Hsl|string}
+         */
+        let fg = /** @type {import("culori").Hsl} */(hsl(item.dataset.fgColor))
         const test = fg
         const lum = fg.l
         fg.l = parseFloat(value)
@@ -836,16 +848,24 @@ export class HTMLA11yColorCard extends HTMLElement {
       const samples = this.#root.querySelectorAll(query)
       // console.log("Func", func, samples)
       // @ts-ignore
+      
+      /**
+       * Description placeholder
+       *
+       * @type {import("culori").Hsl}
+       */
+      // @ts-ignore
       const color = this.#curColor[func]
       // console.log("Color", color)
       samples.forEach(sample => {
         if (color !== null) {
           const myColor = hsl(color)
 
-          sample.style.setProperty("--contrast-color", color)
-          sample.dataset.fgColor = color
+          sample.style.setProperty("--contrast-color", `${color}`)
+          sample.dataset.fgColor = `${color}`
           ratioFailed = false
-          this.#set_lum_slider(!ratioFailed, hsl(color).l)
+          this.#set_lum_slider(!ratioFailed, 
+            /** @type {import("culori").Hsl} */(hsl(color)).l)
 
         }
         else {
@@ -869,7 +889,7 @@ export class HTMLA11yColorCard extends HTMLElement {
             currRatio < (parseFloat(this.#contrastMode) / 10))
         )
 
-        this.#updateColorFormats(color)
+        this.#updateColorFormats(`${color}`)
       })
 
     })

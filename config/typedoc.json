@@ -1,5 +1,5 @@
 {
-  "entryPoints": ["../src4doc/**/*.js"],
+  "entryPoints": ["../docssrc/**/*.js"],
   "entryPointStrategy": "expand",
   "out": "../docs/api",
   "excludePrivate": false,

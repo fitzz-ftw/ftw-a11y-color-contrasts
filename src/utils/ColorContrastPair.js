@@ -313,7 +313,12 @@ export default class ColorContrastPairs {
 
     for (let i = 0; i < this.#recursions; i++) {
       const mid = (low + high) / 2;
-
+      
+      /**
+       * Description placeholder
+       *
+       * @type {import("culori").Hsl}
+       */
       const testColor = { mode: 'hsl', h: this.hue, s: this.sat, l: mid };
       const hex = formatHex(testColor);
       const currentContrast = wcagContrast(hex, this.#originalColor);
@@ -399,6 +404,12 @@ export default class ColorContrastPairs {
       const mid = (low + high) / 2;
 
       // 1. HSL-Testobjekt erzeugen
+      
+      /**
+       * Description placeholder
+       *
+       * @type {import("culori").Hsl}
+       */
       const testColor = { mode: 'hsl', h: this.hue, s: this.sat, l: mid };
 
       // 2. Direkt in das finale Darstellungsformat (Hex) konvertieren

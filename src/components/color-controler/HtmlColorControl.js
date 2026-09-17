@@ -415,10 +415,10 @@ export class HTMLColorControl extends HTMLElement {
     console.log("Picker", value)
     if (this.#colorInput.value == value) return
     this.#colorInput.value = value
-    const colorHsl = hsl(value)
-    this.#hueSlider.value = colorHsl.h
+    const colorHsl = /** @type {import("culori").Hsl} */(hsl(value))
+    this.#hueSlider.value = `${colorHsl.h}`
     this.#hueValueDisplay.textContent = this.#hueSlider.value
-    this.#satSlider.value = colorHsl.s
+    this.#satSlider.value = `${colorHsl.s}`
 
     /**
      * Description placeholder

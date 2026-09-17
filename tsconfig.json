@@ -6,6 +6,9 @@
     "noEmit": true
   },
   "include": [
-    "src4doc/**/*"
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "doc/**/*"
   ],
 }
