@@ -2,12 +2,15 @@
   "entryPoints": ["../docssrc/**/*.js"],
   "entryPointStrategy": "expand",
   "out": "../docs/api",
-  "excludePrivate": false,
+  "gitRemote": "local",
+  "readme": "../README.md",
   "plugin": [
-    "typedoc-plugin-missing-exports"
+    "typedoc-plugin-missing-exports",
+    "typedoc-plugin-coverage"
   ],
   "placeInternalsInOwningModule":true,
-  "excludePrivateClassFields": false,
+  "excludePrivateClassFields": true,
+  "excludePrivate": false,
   "excludeProtected": false,
   "excludeExternals": true,
   "jsDocCompatibility": {
@@ -17,3 +20,4 @@
     "ignoreUnescapedBraces": true
 }
 }
+// typedoc-comments

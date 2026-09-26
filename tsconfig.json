@@ -3,12 +3,16 @@
     "target": "esnext",
     "module": "esnext",
     "allowJs": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": [
+      "vitest/importMeta"
+    ],
   },
   "include": [
     "src/**/*.js"
+    // "docssrc/**/*"
   ],
-  "exclude": [
-    "doc/**/*"
-  ],
+  // "exclude": [
+  //   "doc/**/*"
+  // ],
 }

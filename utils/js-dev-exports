@@ -12,8 +12,8 @@ from pathlib import Path
 from glob import glob
 from shutil import rmtree
 
-file_dir_in="src/components/"
-file_dir_out="src4doc/"
+file_dir_in="src"
+file_dir_out="docssrc/"
 filepath_in=""
 filepath_out=""
 
@@ -30,13 +30,15 @@ parser.add_argument("--clean",
 def js_all_export(argv:list[str]|None=None):
     args = parser.parse_args(argv)
     print(f"scan inputdir: {args.sourcedir}")
+    print("cwd:", Path.cwd())
 
     if args.clean:
         rmtree(file_dir_out)
         return
     
     file_dir_in = args.sourcedir
-    for file_ in glob(file_dir_in+"/*.js"):
+    print(list(glob(file_dir_in+"/**/*.js")))
+    for file_ in glob(file_dir_in+"/**/*.js"):
         print(f"scan file: {file_}")
         filepath_in=Path(file_)
         filepath_out = list(filepath_in.parts)

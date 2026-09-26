@@ -2,43 +2,44 @@
 
 
 import { HTMLA11yColorCard } from "./src/components/color-card/HtmlA11yColorCard.js";
-customElements.define("a11y-card", HTMLA11yColorCard)
-import { HTMLColorControl, ControlEventType } from "./src/components/color-controler/HtmlColorControl.js";
-customElements.define("a11y-control", HTMLColorControl)
+customElements.define("a11y-card", HTMLA11yColorCard);
+import { HTMLColorControl } from "./src/components/color-controler/HtmlColorControl.js";
+customElements.define("a11y-control", HTMLColorControl);
 
 
 
-import ColorContrastPairs from "./src/utils/ColorContrastPair.js"
-import { hsl, formatHex } from "../node_modules/culori/bundled/culori.mjs";
+// import { ColorContrastPairs } from "./src/utils/ColorContrastPair.js";
+// import { hsl, formatHex } from "culori";
 
+// const control =/** @type {HTMLA11yColorCard} */(document.getElementById("a11y-ctrl"));
 
+// control.curColor = "#000000";
 
+// // const x = hsl("#333333")
+// const x = hsl("#1e1e1e")
+// // const y = hsl("#2a2a2a")
+// const y = hsl("#444")
 
-// const x = hsl("#333333")
-const x = hsl("#1e1e1e")
-// const y = hsl("#2a2a2a")
-const y = hsl("#444")
+// console.log("x", x, "y", y)
+// console.log("x", formatHex(x), "y", formatHex(y))
 
-console.log("x", x, "y", y)
-console.log("x", formatHex(x), "y", formatHex(y))
+// const res = ((100 / x.l) * y.l) / 100
 
-const res = ((100 / x.l) * y.l) / 100
+// console.log("res:", res, x.l * res)
 
-console.log("res:", res, x.l * res)
+// const num = 2.2666666666666666
 
-const num = 2.2666666666666666
+// let t = x
+// // t.l *= 1.4
+// t.l *= num
 
-let t = x
-// t.l *= 1.4
-t.l *= num
-
-console.log("css:",
-  formatHex(t),
-  // (x.l * 1.4)
-  (t.l),
-  (x.l * num),
-  hsl()
-)
+// console.log("css:",
+//   formatHex(t),
+//   // (x.l * 1.4)
+//   (t.l),
+//   (x.l * num),
+//   hsl()
+// )
 
 
 // /**

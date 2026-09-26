@@ -1,26 +1,31 @@
 //@ts-check
 
 /**
- * @typedef {object} FontEntry
- * @property {string} label
- * @property {string} family
- * @property {string} style
- * @property {string} sortkey
- * @property {boolean} [disabled]
+ * 
+ * @typedef {object} FontEntry -Interface for font entries for sorting and generating selct options.
+ * @property {string} label - Label for the display
+ * @property {string} family - Name of the font family
+ * @property {"normal"|"italic"} style - Style of the fond can be "normal" or "italic"
+ * @property {string} sortkey - Key to sort teh list
+ * @property {boolean} [disabled] - Is item used for fonts.
  * 
  */
 
 
 /**
- * Sammelt verfügbare Fonts, generiert einen sortkey für perfekte 
- * Roman/Italic-Sortierung und hängt die System-Defaults an.
- * @returns {Array<FontEntry>}
+ * Create a sorted font list including separators and system defaults.
+ * 
+ * Processes the provided font faces, generates a sort key for 
+ * clean Roman/Italic ordering, and appends system default fonts.
+ * 
+ * @param {Iterable<FontFace>|Iterable<{ family: string, style?: string }>} fontSource - The source for font faces.
+ * @returns {Array<FontEntry>} The structured and sorted font list.
  */
-export function getSortedFontListWithKey() {
+export function getSortedFontListWithKey(fontSource) {
   const familyMap = new Map();
 
-  // 1. Stile pro Familie aus document.fonts erfassen
-  for (const fontFace of document.fonts) {
+  // 1. Stile pro Familie aus der übergebenen Quelle erfassen
+  for (const fontFace of fontSource) {
     const family = fontFace.family.replace(/['"]+/g, '');
     const style = fontFace.style || 'normal';
 
@@ -29,9 +34,9 @@ export function getSortedFontListWithKey() {
     }
     familyMap.get(family).add(style);
   }
-  
+
   /**
-   * Description placeholder
+   * Result fonts
    *
    * @type {Array<FontEntry>}
    */
@@ -61,16 +66,14 @@ export function getSortedFontListWithKey() {
   // 3. Einmal sauber über den sortkey alphabetisch sortieren
   items.sort((a, b) => a.sortkey.localeCompare(b.sortkey));
 
-  // 4. System-Defaults für das Ende (bekommen einen Sortkey, der sie garantiert nach hinten sortiert, 
-  // oder wir hängen sie einfach direkt an das fertige Array an)
-  
+  // 4. System-Defaults für das Ende
   /**
-   * Description placeholder
+   * System default fonts
    *
    * @type {Array<FontEntry>}
    */
   const systemDefaults = [
-    { label: 'Sans-Serif (System)', family: 'sans-serif', style: 'normal', sortkey:'sans-serif' },
+    { label: 'Sans-Serif (System)', family: 'sans-serif', style: 'normal', sortkey: 'sans-serif' },
     { label: 'Serif (System)', family: 'serif', style: 'normal', sortkey: 'serif' },
     { label: 'Monospace (System)', family: 'monospace', style: 'normal', sortkey: 'monospace' }
   ];
@@ -78,7 +81,7 @@ export function getSortedFontListWithKey() {
   // 5. Zusammenbauen: Sortierte Custom-Fonts + Spacer + System-Defaults
   return [
     ...items,
-    { label: '──────────', family: '', style: '', disabled: true ,sortkey:'' },
+    { label: '──────────', family: '', style: 'normal', disabled: true, sortkey: '' },
     ...systemDefaults
   ];
 }

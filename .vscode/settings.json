@@ -1,0 +1,25 @@
+{
+    "js/ts.tsdk.path": "./node_modules/typescript/lib",
+    "tree-generator.readmePath": "README.md",
+    "tree-generator.outputStyle": "unicode",
+    "tree-generator.maxDepth": -1,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "js/ts.format.enabled": true,
+    "prettier.configPath": "config/prettier.config.js",
+    "prettier.endOfLine": "auto",
+    "prettier.experimentalOperatorPosition": "start",
+    "prettier.prettierPath": "./node_modules/prettier",
+    "prettier.proseWrap": "always",
+    "prettier.singleAttributePerLine": true,
+    "editor.defaultFoldingRangeProvider": "zokugun.explicit-folding",
+    "eslint.codeActionsOnSave.mode": "problems",
+    "eslint.useESLintClass": true,
+    "eslint.options": {
+        "overrideConfigFile": "config/eslint.config.js"
+    },
+    "prettier.useEditorConfig": false,
+    "prettier.useTabs": false,
+    "vitest.filesWatcherInclude": "src/**/*",
+}

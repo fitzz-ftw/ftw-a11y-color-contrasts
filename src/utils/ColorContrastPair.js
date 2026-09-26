@@ -8,191 +8,362 @@ import {
   filterGrayscale,
   formatHex,
   hsl,
+  parse,
   wcagContrast,
   wcagLuminance
-} from "culori"
+} from "culori";
 
-export default class ColorContrastPairs {
-  #mainColor
+
+/**
+ * Marker and init color for all what schould be darker 
+ *
+ * @type {"#ffffff"}
+ */
+export const noneDarker = "#ffffff";
+
+/**
+ * Marker and init color for all what schould be lighter 
+ *
+ * @type {"#000000"}
+ */
+export const noneLighter = "#000000";
+
+
+/**
+ * Class for managing contrast pair of a color.
+ *
+ * @class ColorContrastPairs
+ */
+export class ColorContrastPairs {
+  //SECTION - private vars
+  #mainColor;
   // hue
   // chroma
   // lum
-  #originalColor
-  #ariaLum
-
-  #recursions = 15
 
   /**
+   * Description placeholder
    *
-   * @type {string|undefined|null}
+   * @type {string}
    */
-  #darker70
+  #originalColor;
+  #ariaLum = -1;
+
+  #recursions = 15;
+
   /**
    *
-   * @type {string|undefined|null}
+   * @type {string}
    */
-  #lighter70
+  #darker70 = noneDarker;
   /**
    *
-   * @type {string|undefined|null}
+   * @type {string}
    */
-  #darker45
+  #lighter70 = noneLighter;
   /**
    *
-   * @type {string|undefined|null}
+   * @type {string}
    */
-  #lighter45
+  #darker45 = noneDarker;
   /**
    *
-   * @type {string|undefined|null}
+   * @type {string}
    */
-  #darker30
+  #lighter45 = noneLighter;
   /**
    *
-   * @type {string|undefined|null}
+   * @type {string}
    */
-  #lighter30
+  #darker30 = noneDarker;
+  /**
+   *
+   * @type {string}
+   */
+  #lighter30 = noneLighter;
 
   /**
    * Description placeholder
    *
    * @type {number}
    */
-  #tolerance = 0.001
+  #tolerance = 0.001;
 
-  #deficiency = 1
+  #deficiency = 1;
+
+  //!SECTION - private vars
+  /** 
+   * 
+   */
+
   /**
    * Creates an instance of ColorPairs.
    *
-   * @constructor
-   * @param {string|import("culori").Color} mainColor 
+   * @param {string} mainColor 
    */
   constructor(mainColor) {
-    this.#originalColor = mainColor
-    this.#mainColor = hsl(mainColor) ?? mainColor;
-    this.#ariaLum = wcagLuminance(this.#mainColor)
-    this.calculate()
+    this.#originalColor = mainColor;
+    this.#mainColor = /** @type{import("culori").Hsl} */(hsl(mainColor));
+    this.#ariaLum = wcagLuminance(this.#mainColor);
+    this.calculate();
   }
 
+
+  /**
+   * Set the hue in degree
+   *
+   * @type {number}
+   */
   set hue(value) {
-    // @ts-ignore
-    this.#mainColor.h = value
+    this.#mainColor.h = value;
 
   }
+
+  /**
+   * Set the saturation in percent.
+   *
+   * @type {number}
+   */
   set sat(value) {
-    // @ts-ignore
-    this.#mainColor.s = value
-  }
-  set lum(value) {
-    // @ts-ignore
-    this.#mainColor.l = value
-  }
-  get hue() {
-    // @ts-ignore
-    return this.#mainColor.h
-  }
-  get sat() {
-    // @ts-ignore
-    return this.#mainColor.s
-  }
-  get lum() {
-    // @ts-ignore
-    return this.#mainColor.l
-  }
-  get ariaLum() {
-    return this.#ariaLum
+    this.#mainColor.s = value;
   }
 
+  /**
+   * Set the lumenicence in percent.
+   *
+   * @type {number}
+   */
+  set lum(value) {
+    this.#mainColor.l = value;
+  }
+
+  /** The hue in degree */
+  get hue() {
+    return this.#mainColor.h;
+  }
+
+  /** The saturation in percent. */
+  get sat() {
+    return this.#mainColor.s;
+  }
+
+  /** The lumenicence in percent. */
+  get lum() {
+    return this.#mainColor.l;
+  }
+
+  /**
+   * The luminicency in aria standard calculation.
+   *
+   * @type {number}
+   */
+  get ariaLum() {
+    return this.#ariaLum;
+  }
+
+  /**
+   * The unchanged original color.
+   *
+   * @type {string}
+   */
   get originalColor() {
-    return this.#originalColor
+    return this.#originalColor;
   }
   /**
-   * Description placeholder
+   * The color value for the 4 color deficiencies from original color.
    *
-   * @readonly
-   * @type {[string, string, string,string]}
+   * @returns {[string,string,string,string]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
    */
   get originalColorDef() {
-    return this.getDeficiencies(this.originalColor)
+    return this.getDeficiencies(/** @type {import("culori").Hsl} */(hsl(this.originalColor)));
   }
 
 
+  /**
+   * The darker color with a contrast of 7:1 to the original color.
+   *
+   * @type {string}
+   */
   get darker70() {
-    return this.#darker70 ?? null
+    return this.#darker70;
   }
+  /**
+   * The color value for the 4 color deficiencies from darker color with 7:1 contrast.
+   *
+   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
+   */
   get darker70Def() {
-    if (!this.darker70) return []
-    return this.getDeficiencies(this.darker70)
+    if (this.darker70 === noneDarker) { 
+      return []; }
+      return this.getDeficiencies(this.darker70);
   }
+  
+  /**
+   * The ratio of the darker color with a contrast from at least 7:1.
+   *
+   * @type {number}
+   */
   get darker70Ratio() {
-    if (!this.darker70)
-      return 0
-    return wcagContrast(this.originalColor, this.darker70)
+    if (this.darker70 === noneDarker)
+      return 0;
+    return wcagContrast(this.originalColor, this.darker70);
   }
 
+  /**
+   * The lighter color with a contrast of 7:1 to the original color.
+   *
+   * @readonly
+   * @type {string}
+   */
   get lighter70() {
-    return this.#lighter70 ?? null
+    return this.#lighter70;
   }
+  /**
+   * The color value for the 4 color deficiencies from lighter color with 7:1 contrast.
+   *
+   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
+   */
   get lighter70Def() {
-    if (!this.lighter70) return []
-    return this.getDeficiencies(this.lighter70)
+    if (this.lighter70 === noneLighter){ 
+      return [];}
+      return this.getDeficiencies(this.lighter70);
   }
+  /**
+   * The ratio of the lighter color with a contrast from at least 7:1.
+   *
+   * @type {number}
+   */
   get lighter70Ratio() {
-    if (!this.lighter70)
-      return 0
-    return wcagContrast(this.originalColor, this.lighter70)
+    if (this.lighter70 === noneLighter)
+      return 0;
+    return wcagContrast(this.originalColor, this.lighter70);
   }
 
+  /**
+   * The darker color with a contrast of 4.5:1 to the original color.
+   *
+   * @readonly
+   * @type {string}
+   */
   get darker45() {
-    return this.#darker45 ?? null
+    return this.#darker45;
   }
+  /**
+   * The color value for the 4 color deficiencies from darker color with 4.5:1 contrast.
+   *
+   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
+   */
   get darker45Def() {
-    if (!this.darker45) return []
-    return this.getDeficiencies(this.darker45)
+    if (this.darker45 === noneDarker){
+      return [];}
+      return this.getDeficiencies(this.darker45);
   }
+  /**
+   * The ratio of the darker color with a contrast from at least 4.5:1.
+   *
+   * @type {number}
+   */
   get darker45Ratio() {
-    if (!this.darker45)
-      return 0
-    return wcagContrast(this.originalColor, this.darker45)
+    if (this.darker45 === noneDarker)
+      return 0;
+    return wcagContrast(this.originalColor, this.darker45);
   }
 
+  /**
+   * The lighter color with a contrast of 4.5:1 to the original color.
+   *
+   * @readonly
+   * @type {string}
+   */
   get lighter45() {
-    return this.#lighter45 ?? null
+    return this.#lighter45;
   }
+  /**
+   * The color value for the 4 color deficiencies from lighter color with 4.5:1 contrast.
+   *
+   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
+   */
   get lighter45Def() {
-    if (!this.lighter45) return []
-    return this.getDeficiencies(this.lighter45)
+    if (this.lighter45===noneLighter){ 
+      return [];}
+    return this.getDeficiencies(this.lighter45);
   }
+  /**
+   * The ratio of the lighter color with a contrast from at least 4.5:1.
+   *
+   * @type {number}
+   */
   get lighter45Ratio() {
-    if (!this.lighter45)
-      return 0
-    return wcagContrast(this.originalColor, this.lighter45)
+    if (this.lighter45 === noneLighter)
+      return 0;
+    return wcagContrast(this.originalColor, this.lighter45);
   }
 
+  /**
+   * The darker color with a contrast of 3:1 to the original color.
+   *
+   * @readonly
+   * @type {string}
+   */
   get darker30() {
-    return this.#darker30 ?? null
+    return this.#darker30;
   }
+  /**
+   * The color value for the 4 color deficiencies from darker color with 3:1 contrast.
+   *
+   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
+   */
   get darker30Def() {
-    if (!this.darker30) return []
-    return this.getDeficiencies(this.darker30)
+    if (this.darker30===noneDarker){ 
+      return [];}
+    return this.getDeficiencies(this.darker30);
   }
+  /**
+   * The ratio of the darker color with a contrast from at least 3:1.
+   *
+   * @type {number}
+   */
   get darker30Ratio() {
-    if (!this.darker30)
-      return 0
-    return wcagContrast(this.originalColor, this.darker30)
+    if (this.darker30 === noneDarker)
+      return 0;
+    return wcagContrast(this.originalColor, this.darker30);
   }
 
+  /**
+   * The lighter color with a contrast of 3:1 to the original color.
+   *
+   * @readonly
+   * @type {string}
+   */
   get lighter30() {
-    return this.#lighter30 ?? null
+    return this.#lighter30;
   }
+  /**
+   * The color value for the 4 color deficiencies from lighter color with 3:1 contrast.
+   *
+   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
+   */
   get lighter30Def() {
-    if (!this.lighter30) return []
-    return this.getDeficiencies(this.lighter30)
+    if (this.lighter30===noneLighter){
+      return [];}
+      return this.getDeficiencies(this.lighter30);
   }
+  /**
+   * The ratio of the lighter color with a contrast from at least 3:1.
+   *
+   * @type {number}
+   */
   get lighter30Ratio() {
-    if (!this.lighter30)
-      return 0
-    return wcagContrast(this.originalColor, this.lighter30)
+    if (this.lighter30 === noneLighter)
+      return 0;
+    return wcagContrast(this.originalColor, this.lighter30);
   }
 
 
@@ -205,29 +376,27 @@ export default class ColorContrastPairs {
   // Deuteranopie ist eine genetisch bedingte Grünblindheit
 
   /**
-   * Description placeholder
+   * Create the color value for the 4 color deficiencies.
    *
-   * @param {string|import("culori").Color} color 
-   * @returns {[string,string,string,string]} 
+   * @param {string|import("culori").Hsl} color 
+   * @returns {[string,string,string,string]} Tuple of colorstrings with the 
+   *      deficiencies in following order: red, green, blue and color.
    */
   getDeficiencies(color) {
+    if (typeof color === 'string')
+      color = /** @type {import("culori").Hsl} */(parse(color));
     return [
-      // @ts-ignore
-      formatHex(filterDeficiencyProt(this.#deficiency)(color)) ?? "",
-      // @ts-ignore
-      formatHex(filterDeficiencyDeuter(this.#deficiency)(color)) ?? "",
-      // @ts-ignore
-      formatHex(filterDeficiencyTrit(this.#deficiency)(color)) ?? "",
-      // @ts-ignore
-      formatHex(filterGrayscale(this.#deficiency)(color)) ?? "",
-    ]
+      formatHex(filterDeficiencyProt(this.#deficiency)(color)),
+      formatHex(filterDeficiencyDeuter(this.#deficiency)(color)),
+      formatHex(filterDeficiencyTrit(this.#deficiency)(color)),
+      formatHex(filterGrayscale(this.#deficiency)(color)),
+    ];
   }
 
 
-  // Helper to test contrast for a given lightness L
 
   /**
-   * Description placeholder
+   * Helper to test contrast for a given lightness L
    *
    * @param {number} lVal 
    * @returns {number} 
@@ -244,68 +413,22 @@ export default class ColorContrastPairs {
   };
 
 
-  // Binary search implementation for a target contrast ratio within a range [minL, maxL]
-  // direction: 'darker' (searching downwards) or 'lighter' (searching upwards)
+
+
 
   /**
-   * Description placeholder
+   * Binary search implementation for a target contrast ratio within a range [minL, maxL]
+   * direction: 'lighter' (searching upwards)
    *
    * @param {number} targetContrast 
    * @param {number} minL 
    * @param {number} maxL 
-   * @returns {string|null} 
-   */
-  findThresholdBrighterL_old(targetContrast, minL, maxL) {
-    let low = minL;
-    let high = maxL;
-    let bestL = null;
-
-    // Quick boundary validation
-    const contrastAtLow = this.getContrastForL(low);
-    const contrastAtHigh = this.getContrastForL(high);
-
-    if (contrastAtHigh < targetContrast && contrastAtLow < targetContrast) {
-      return null; // Target unreachable in this range
-    }
-
-    for (let i = 0; i < this.#recursions; i++) { // Max 15 iterations for high precision
-      const mid = (low + high) / 2;
-      const currentContrast = this.getContrastForL(mid);
-
-      if (currentContrast >= targetContrast) {
-        bestL = mid;
-        // Narrow down towards the background to find the minimum required distance
-        if (targetContrast === 3.0) {
-          // For darker, higher L is closer to bg; for lighter, lower L is closer to bg
-          // Handled via range boundaries passed to the function
-        }
-        high = mid; // Try to get closer
-      } else {
-        low = mid; // Need more contrast, push further away from bg
-      }
-
-      if ((high - low) < this.#tolerance) break;
-    }
-
-    if (bestL !== null) {
-      return formatHex({ mode: 'hsl', l: bestL, s: this.sat, h: this.hue }) ?? null;
-    }
-    return null;
-  };
-
-  /**
-   * Description placeholder
-   *
-   * @param {number} targetContrast 
-   * @param {number} minL 
-   * @param {number} maxL 
-   * @returns {string|null} 
+   * @returns {string} 
    */
   findThresholdBrighterL(targetContrast, minL, maxL) {
     let low = minL;
     let high = maxL;
-    let bestL = null;
-    let bestHex = null;
+    let bestHex = "#000000";
 
     // Für hellere Varianten wollen wir von unten (minL) 
     // nach oben wandern, bis der Kontrast passt, und dann den 
@@ -313,7 +436,7 @@ export default class ColorContrastPairs {
 
     for (let i = 0; i < this.#recursions; i++) {
       const mid = (low + high) / 2;
-      
+
       /**
        * Description placeholder
        *
@@ -324,7 +447,6 @@ export default class ColorContrastPairs {
       const currentContrast = wcagContrast(hex, this.#originalColor);
 
       if (currentContrast >= targetContrast) {
-        bestL = mid;
         bestHex = hex;
         // Genug Kontrast: Versuchen wir, wieder näher 
         // an den Ausgangspunkt heranzugehen (niedrigeres L), 
@@ -338,73 +460,32 @@ export default class ColorContrastPairs {
       if ((high - low) < this.#tolerance) break;
     }
 
-    if (bestHex !== null) {
-      return bestHex ?? null;
-    }
-    return null;
+
+    return bestHex;
+
+
   }
 
 
   /**
-   * Description placeholder
+   * Binary search implementation for a target contrast ratio within a range [minL, maxL]
+   * direction: 'darker' (searching downwards)
    *
    * @param {number} targetContrast 
    * @param {number} minL 
    * @param {number} maxL 
-   * @returns {string|null} 
-   */
-  findThresholdDarkerL_old(targetContrast, minL, maxL) {
-    let low = minL; // z.B. 0 (Schwarz)
-    let high = maxL; // z.B. bgLum (Hintergrund)
-    let bestL = null;
-
-    // Für dunklere Varianten wollen wir von der Hintergrundnähe (maxL) 
-    // nach unten wandern, bis der Kontrast passt, und dann den 
-    // sanftesten (höchsten) L-Wert finden, der das Ziel erreicht.
-
-    for (let i = 0; i < this.#recursions; i++) {
-      const mid = (low + high) / 2;
-      const currentContrast = this.getContrastForL(mid);
-
-      if (currentContrast >= targetContrast) {
-        bestL = mid;
-        // Wir haben genug Kontrast! Versuchen wir, wieder näher 
-        // an den Hintergrund heranzugehen (höheres L für dunkler), 
-        // um den subtilsten möglichen Farbton zu finden.
-        low = mid;
-      } else {
-        // Noch nicht genug Kontrast, wir müssen dunkler werden
-        high = mid;
-      }
-
-      if ((high - low) < this.#tolerance) break;
-    }
-
-    if (bestL !== null) {
-      return formatHex({ mode: 'hsl', l: bestL, s: this.sat, h: this.hue }) ?? null;
-    }
-    return null;
-  }
-
-  /**
-   * Description placeholder
-   *
-   * @param {number} targetContrast 
-   * @param {number} minL 
-   * @param {number} maxL 
-   * @returns {string|null} 
+   * @returns {string} 
    */
   findThresholdDarkerL(targetContrast, minL, maxL) {
     let low = minL;
     let high = maxL;
-    let bestL = null;
-    let bestHex = null;
+    let bestHex = "#ffffff";
 
     for (let i = 0; i < this.#recursions; i++) {
       const mid = (low + high) / 2;
 
       // 1. HSL-Testobjekt erzeugen
-      
+
       /**
        * Description placeholder
        *
@@ -419,7 +500,6 @@ export default class ColorContrastPairs {
       const currentContrast = wcagContrast(hex, this.#originalColor);
 
       if (currentContrast >= targetContrast) {
-        bestL = mid;
         bestHex = hex; // Den echten, finalen Hex-Wert sichern
         // Genug Kontrast: Versuche wieder etwas näher an den Hintergrund (heller) heranzugehen
         low = mid;
@@ -432,41 +512,36 @@ export default class ColorContrastPairs {
     }
 
     // Wir geben direkt den validierten Hex-Wert zurück oder mappen ihn sauber
-    return bestHex ?? null;
+    return bestHex;
   }
 
+  /** Calculate the treshholds for the ratio entries. */
   calculate() {
     // --- DARKER VARIANTS SEARCH (Range: [0, bgLum]) ---
     // Scout for 3.0 first, then leverage bounds for 4.5 and 7.0
     this.#darker30 = this.findThresholdDarkerL(3.0, 0, this.lum);
-    if (this.darker30) {
-      // @ts-ignore
-      const l30 = hsl(this.darker30).l;
+    if (this.#darker30 !== '#ffffff') {
+      const l30 = /** @type {import("culori").Hsl} */(hsl(this.#darker30)).l;
       this.#darker45 = this.findThresholdDarkerL(4.5, 0, l30);
     }
-    if (this.darker45) {
-      // @ts-ignore
-      const l45 = hsl(this.darker45).l;
+    if (this.#darker45 !== '#ffffff') {
+      const l45 = /** @type {import("culori").Hsl} */(hsl(this.#darker45)).l;
       this.#darker70 = this.findThresholdDarkerL(7.0, 0, l45);
-    } else if (this.darker30) {
-      // @ts-ignore
-      this.#darker70 = this.findThresholdDarkerL(7.0, 0, hsl(this.darker30).l);
+    } else if (this.#darker30 !== '#ffffff') {
+      this.#darker70 = this.findThresholdDarkerL(7.0, 0, /** @type {import("culori").Hsl} */(hsl(this.#darker30)).l);
     }
 
     // --- BRIGHTER VARIANTS SEARCH (Range: [bgLum, 1]) ---
     this.#lighter30 = this.findThresholdBrighterL(3.0, this.lum, 1);
-    if (this.lighter30) {
-      // @ts-ignore
-      const l30 = hsl(this.lighter30).l;
+    if (this.#lighter30 !== '#000000') {
+      const l30 = /** @type {import("culori").Hsl} */(hsl(this.#lighter30)).l;
       this.#lighter45 = this.findThresholdBrighterL(4.5, l30, 1);
     }
-    if (this.lighter45) {
-      // @ts-ignore
-      const l45 = hsl(this.lighter45).l;
+    if (this.#lighter45 !== '#000000') {
+      const l45 = /** @type {import("culori").Hsl} */(hsl(this.#lighter45)).l;
       this.#lighter70 = this.findThresholdBrighterL(7.0, l45, 1);
-    } else if (this.lighter30) {
-      // @ts-ignore
-      this.#lighter70 = this.findThresholdBrighterL(7.0, hsl(this.lighter30).l, 1);
+    } else if (this.#lighter30 !== '#000000') {
+      this.#lighter70 = this.findThresholdBrighterL(7.0, /** @type {import("culori").Hsl} */(hsl(this.#lighter30)).l, 1);
     }
 
   }
