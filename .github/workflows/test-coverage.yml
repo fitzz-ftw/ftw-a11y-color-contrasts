@@ -32,4 +32,6 @@ jobs:
       if: always() 
       uses: davelosert/vitest-coverage-report-action@v2
       with:
+        vite-config-path: './config/vite.config.mjs'
+        coverage-path: './docs/html/coverage/coverage-summary.json' # Pfad zur Coverage-Datei
         threshold-icons: "{0: '🔴', 80: '🟠', 90: '🟢'}"
