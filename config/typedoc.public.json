@@ -5,7 +5,7 @@
   "exclude":["../src/**/*.test.js", "../src/**/*.browser-test.js"],
   "tsconfig": "./tsconfig.public.json",
   "gitRemote": "origin",
-  "sourceLinkTemplate": "https://github.com/fitzz-ftw/a11y-color-components/blob/{gitRevision}/{path}#L{line}",
+  "sourceLinkTemplate": "https://github.com/fitzz-ftw/a11y-color-contrasts/blob/{gitRevision}/{path}#L{line}",
   "readme": "../README.md",
   "plugin": [
     "typedoc-plugin-missing-exports",

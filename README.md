@@ -13,7 +13,7 @@ A lightweight, framework-agnostic web component library for selecting WCAG-compl
 ## Usage
 
 ``` html
-<script type="module" src="https://esm.sh/@fitzz-ftw/a11y-color-components"></script>
+<script type="module" src="https://esm.sh/@fitzz-ftw/a11y-color-contrasts"></script>
 
 <a11y-color-control for="acc1 acc2" ></a11y-color-control>
 

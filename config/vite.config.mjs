@@ -52,7 +52,7 @@ export default defineConfig({
     lib: {
       entry: resolve(import.meta.dirname, '../src/index.js'),
       name: 'A11yColorComponents',
-      fileName: 'a11y-color-components',
+      fileName: 'a11y-color-contrasts',
       formats: ['es', 'umd'],
     },
     rollupOptions: {

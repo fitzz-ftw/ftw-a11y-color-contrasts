@@ -1,12 +1,12 @@
 {
   "name": "@fitzz-ftw/a11y-color-contrasts",
-  "version": "1.0.0",
-  "main": "./dist/a11y-color-components.umd.cjs",
-  "module": "./dist/a11y-color-components.js",
+  "version": "1.0.1",
+  "main": "./dist/a11y-color-contrasts.umd.cjs",
+  "module": "./dist/a11y-color-contrasts.js",
   "exports": {
     ".": {
-      "import": "./dist/a11y-color-components.js",
-      "require": "./dist/a11y-color-components.umd.cjs"
+      "import": "./dist/a11y-color-contrasts.js",
+      "require": "./dist/a11y-color-contrasts.umd.cjs"
     }
   },
   "files": [
@@ -36,13 +36,13 @@
   "author": "Fitzz TeXnik Welt <FitzzTeXnikWelt@t-online.de>",
   "license": "ISC",
   "description": "A lightweight, framework-agnostic web component library for selecting WCAG-compliant accessible color pairs",
-  "homepage": "https://fitzz-ftw.github.io/a11y-color-components/",
+  "homepage": "https://fitzz-ftw.github.io/a11y-color-contrasts/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fitzz-ftw/a11y-color-components.git"
+    "url": "git+https://github.com/fitzz-ftw/a11y-color-contrasts.git"
   },
   "bugs": {
-    "url": "https://github.com/fitzz-ftw/a11y-color-components/issues"
+    "url": "https://github.com/fitzz-ftw/a11y-color-contrasts/issues"
   },
   "peerDependencies": {
     "culori": "^4.0.2"
