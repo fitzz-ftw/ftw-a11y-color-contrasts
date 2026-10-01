@@ -81,7 +81,6 @@ describe("Intern methodes emitted because of interactive Actions", () => {
     expect(testCard.exampleText).toBe("Beispieltext für Barrierefreiheit");
     control.addCard("");
     expect(testCard.exampleText).toBe("Hallo World");
-    console.log(control.getCardStatuses());
     [key, valueB] =
       control.getCardStatuses().entries().next().value ?? defaultItem;
     expect(key).toBe("card-1");
