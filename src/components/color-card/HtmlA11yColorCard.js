@@ -1,20 +1,28 @@
+/**
+ * @packageDocumentation
+ * 
+ * ## Abstract
+ * Web component module for accessibility color contrast evaluation.
+ *  
+ * ## Architecture & Usage 
+ * Provides the {@link HTMLA11yColorCard} custom element to visualize and test 
+ * WCAG contrast ratios, supporting different font sizes, WCGA conformance levels (AA/AAA), 
+ * and color vision deficiency (CVD) simulations.
+ */
 // @ts-check
 
 /* c8 ignore start */
 /**
- * Description placeholder
- *
  * @param {...{}} param 
  */
 const _debuglog = (...param) => {
   console.log(...param);
 };
 /** @param {...{}} _param */
-// eslint-disable-next-line no-unused-vars
 const _noDebuglog = (..._param) => { };
 
 let debuglog = _debuglog;
-// debuglog = _noDebuglog;
+debuglog = _noDebuglog;
 /* c8 ignore stop */
 
 import {
@@ -25,12 +33,11 @@ import {
   hsl,
   // } from "../node_modules/culori/bundled/culori.mjs";
 } from "culori";
+// eslint-disable-next-line no-unused-vars
 import { ColorContrastPairs, noneDarker, noneLighter } from "../../utils/ColorContrastPair.js";
 
 // @ts-ignore
 import modulecss from '../components.css?inline' with { type: 'css' };
-// @ts-ignore
-// import modulcss from './HtmlA11yColorCards.css?inline' with { type: 'css' };
 
 /**
  * The CSSStylesheet for the shadowroot.
@@ -49,11 +56,23 @@ if (typeof modulecss == "string") {
 }
 
 /** 
- * @typedef {"normal"|"bold"|"large"} FontModeEnum
+ * @typedef {"normal"|"bold"|"large"} FontModeEnum Defines the available font modes for the card.
+ * 
+ * The WCGA knows three kind of fonts
+ * - normal: <18 pt
+ * - large: >=18 pt
+ * - bold: boldface and >16 pt
+ * 
  */
 
 /** 
+ * 
  * @typedef {"AA"|"AAA"} WCAGModeEnum
+ * Defines the WCAG conformance mode levels.
+ * 
+ * The WCGA knows two levels:
+ * - **AA** Now the standard and entry level.
+ * - **AAA** The extended level with higher contrasts.
  */
 
 const template =/*html*/`
@@ -121,11 +140,21 @@ const template =/*html*/`
     />
 </div>
 `;
+
+
+
+/**
+ * Web Component representing an accessibility color card.
+ * 
+ * This component evaluates and visualizes color contrast ratios according to 
+ * official WCAG guidelines. It supports different text modes (normal, bold, large), 
+ * conformance levels (AA, AAA), and simulates color vision deficiencies (CVD). 
+ * 
+ * @class 
+ * @extends {HTMLElement}
+ */
 export class HTMLA11yColorCard extends HTMLElement {
   #root = this.attachShadow({ mode: 'closed' });
-  // @ts-ignore
-
-
   /**
    * The current color pairs used. A random color, which will be overriden by
    * the "initial-color" HTMLattribute or by the setter curColor.
@@ -133,11 +162,7 @@ export class HTMLA11yColorCard extends HTMLElement {
    * @type {ColorContrastPairs}
    */
   #curColor = new ColorContrastPairs("#18fbf8");
-
-
   /**
-   * 
-   *
    * @type {Array<[string,(color:string)=>string|undefined]>}
   */
   static #formats = [
@@ -145,20 +170,13 @@ export class HTMLA11yColorCard extends HTMLElement {
     [".hex", formatHex],
     [".hsl", formatHsl],
   ];
-
-
   /**
    * Allowed font modes
-   *
-   * @static
+   * 
    * @type {Array<FontModeEnum>}
    */
   static #fontModes = ["normal", "bold", "large"];
-
-
   /**
-   * Description placeholder
-   *
    * @type {FontModeEnum}
    */
   #fontMode = HTMLA11yColorCard.#fontModes[0];
@@ -170,8 +188,6 @@ export class HTMLA11yColorCard extends HTMLElement {
   ]);
 
   /**
-   * Description placeholder
-   *
    * @type {{ family: string; style: "normal"|"italic"; }}
    */
   #previewFont = {
@@ -180,17 +196,14 @@ export class HTMLA11yColorCard extends HTMLElement {
   };
 
   /**
-   * WCGA Categories.
-   *
-   * @static
+   * WCGA Level.
+   * 
    * @type {Array<WCAGModeEnum>}
    */
   static #wcgaModes = ["AA", "AAA"];
 
-
-
   /**
-   * Current used WCGA category
+   * Current used WCGA level.
    *
    * @type {WCAGModeEnum}
    */
@@ -200,23 +213,16 @@ export class HTMLA11yColorCard extends HTMLElement {
   #contrastMode = HTMLA11yColorCard.#contrastModes[0];
 
   /**
-   * Description placeholder
-   *
-   * @static
    * @type {string[]}
    */
   static #colorModes = ["darker", "lighter"];
 
   /**
-   * Description placeholder
-   *
    * @type {string}
    */
   #colorMode = HTMLA11yColorCard.#colorModes[0];
 
   /**
-   * 
-   *
    * @type {Array<[string,string, number]>}
    */
   static #examples = [
@@ -238,8 +244,6 @@ export class HTMLA11yColorCard extends HTMLElement {
 
 
   /**
-   * 
-   *
    * @type {Array<[string,string,number,number]>}
    */
   static #examplesCVD = [
@@ -282,22 +286,18 @@ export class HTMLA11yColorCard extends HTMLElement {
   #curExamplesCVD = [];
 
   /**
-   * Description placeholder
-   *
    * @type {string}
    */
   #exampleText = "Beispieltext für Barrierefreiheit";
 
 
   /**
-   * Description placeholder
-   *
    * @type {HTMLInputElement}
-   */
+  */
   #slider;
 
   /**
-   * Creates an instance of HTMLA11yColorCard.
+   * Create an instance of {@link HTMLA11yColorCard}.
   */
   constructor() {
     super();
@@ -309,8 +309,8 @@ export class HTMLA11yColorCard extends HTMLElement {
   /**
    * Defines the attributes that should trigger attributeChangedCallback when modified.
    *
-   * @static
    * @type {string[]}
+   * @internal
   */
   static get observedAttributes() {
     return [
@@ -323,8 +323,8 @@ export class HTMLA11yColorCard extends HTMLElement {
 
   /**
    * Invoked each time the custom element is appended into a document-connected element.
+   * @internal
    */
-
   connectedCallback() {
     this.#updateUI();
 
@@ -333,6 +333,7 @@ export class HTMLA11yColorCard extends HTMLElement {
 
   /**
    * Invoked each time the custom element is disconnected from the document's DOM.
+   * @internal
    */
   disconnectedCallback() {
   }
@@ -343,6 +344,7 @@ export class HTMLA11yColorCard extends HTMLElement {
    * @param {string} name - Name of the attribute.
    * @param {string|null} oldValue - The old value of the attribute.
    * @param {string|null} newValue - The new, current value of the attribute.
+   * @internal
   */
   attributeChangedCallback(name, oldValue, newValue) {
     // console.log('Name:', name, ' Values: old:', oldValue, ' new:', newValue)
@@ -359,7 +361,7 @@ export class HTMLA11yColorCard extends HTMLElement {
         break;
       case "font-mode":
         if (!newValue) return;
-        this.#setFontMode(newValue);
+        this.#setFontMode(/** @type {FontModeEnum} */(newValue));
         break;
       case "wcag-mode":
         if (!newValue) return;
@@ -367,12 +369,13 @@ export class HTMLA11yColorCard extends HTMLElement {
         break;
       /* c8 ignore next */
       default:
-        throw Error(`Attribute not allowed: ${name} `);
+        throw Error(`Attribute not allowed: ${name}`.trim());
     }
   }
 
 
   /** 
+   * Get the currend color.
    * @returns {ColorContrastPairs}
    */
   get curColor() {
@@ -380,7 +383,7 @@ export class HTMLA11yColorCard extends HTMLElement {
   }
 
   /**
-   * Description placeholder
+   * Set the currend color.
    *
    * @param {ColorContrastPairs|string} value
    */
@@ -393,8 +396,6 @@ export class HTMLA11yColorCard extends HTMLElement {
       if (value.originalColor == this.#curColor.originalColor) return;
       this.#curColor = value;
     }
-    // this.#filterModes()
-    // this.#calculateContrast()
 
     this.#updateUI();
     this.dispatchEvent(new CustomEvent('current-color-changed', {
@@ -407,10 +408,18 @@ export class HTMLA11yColorCard extends HTMLElement {
       composed: true // Can leave shadow DOM
     }));
   }
-
+  /**
+   * Get the example text displayed on the card.
+   * @type {string}
+   */
   get exampleText() {
     return this.#exampleText;
   }
+
+  /**
+  * Set the example text displayed on the card.
+  * @type {string}
+  */
   set exampleText(value) {
     if (this.#exampleText === value) return;
     const oV = this.#exampleText;
@@ -427,9 +436,17 @@ export class HTMLA11yColorCard extends HTMLElement {
     }));
   }
 
+  /**
+ * Get the hue component value.
+ * @type {number}
+ */
   get hue() {
-    return this.#curColor.hue;
+    return /** @type {number} */(this.#curColor.hue);
   }
+  /**
+ * Set the hue component value.
+ * @type {number}
+ */
   set hue(value) {
     const oV = this.#curColor.hue;
     if (oV == value) return;
@@ -447,9 +464,17 @@ export class HTMLA11yColorCard extends HTMLElement {
     }));
   }
 
+  /**
+ * Get the saturation component value.
+ * @type {number}
+ */
   get sat() {
     return this.#curColor.sat;
   }
+  /**
+   * Set the saturation component value.
+   * @type {number}
+  */
   set sat(value) {
     const oV = this.#curColor.sat;
     if (value == oV) return;
@@ -467,9 +492,17 @@ export class HTMLA11yColorCard extends HTMLElement {
     }));
   }
 
+  /**
+ * Get the font family used for the text preview.
+ * @type {string}
+ */
   get previewFont() {
     return JSON.stringify(this.#previewFont);
   }
+  /**
+ * Set the font family used for the text preview.
+ * @type {string}
+ */
   set previewFont(value) {
     const oV = JSON.stringify(this.#previewFont);
     if (oV == value) return;
@@ -485,10 +518,17 @@ export class HTMLA11yColorCard extends HTMLElement {
       composed: true // Can leave shadow DOM
     }));
   }
+  /**
+ * Get the active display mode.
+ * @type {string}
+ */
   get mode() {
     return this.#colorMode;
   }
-  /** @param {string} value */
+  /** 
+   * Set the active display mode.
+   * @param {string} value 
+  */
   #setMode(value) {
     if (HTMLA11yColorCard.#colorModes.includes(value.toLowerCase())) {
       const oV = this.#colorMode.toLocaleLowerCase();
@@ -506,11 +546,17 @@ export class HTMLA11yColorCard extends HTMLElement {
       }));
     }
   }
-
+  /**
+   * Get the font mode.
+   * @type {FontModeEnum}
+   */
   get fontMode() {
     return this.#fontMode;
   }
-  /** @param  {string} value */
+  /**
+ * Set the font mode.
+ * @param  {FontModeEnum} value 
+ * */
   #setFontMode(value) {
     const nV = /** @type {FontModeEnum} */(value.toLowerCase());
     if (HTMLA11yColorCard.#fontModes.includes(nV)) {
@@ -530,10 +576,17 @@ export class HTMLA11yColorCard extends HTMLElement {
     }
   }
 
+  /**
+ * Get the WCAG compliance target level.
+ * @type {WCAGModeEnum}
+ */
   get wcagMode() {
     return this.#wcagMode;
   }
-  /** @param  {WCAGModeEnum} value */
+  /** 
+   * Set the WCAG compliance target level.
+   * @param  {WCAGModeEnum} value 
+   */
   #setWcagMode(value) {
     const nV = /** @type {WCAGModeEnum} */(value.toUpperCase());
     if (HTMLA11yColorCard.#wcgaModes.includes(nV)) {
@@ -552,49 +605,67 @@ export class HTMLA11yColorCard extends HTMLElement {
     }
   }
 
+  /**
+ * Get the current value of the luminescence slider.
+ * @type {string}
+ */
   get luminescenceSliderValue() {
     return this.#slider.value;
   }
+  /**
+ * Set the current value of the luminescence slider.
+ * @type {number}
+ */
   set luminescenceSliderValue(value) {
     const min = parseFloat(this.#slider.min);
     const max = parseFloat(this.#slider.max);
     const valueF = parseFloat(value);
+    /// console.log("lumSliderValue", value, valueF, min, max);
     if (!this.#slider.disabled
       && min <= valueF
       && max >= valueF
     ) {
 
-      this.#slider.value = `${value}`;
+      this.#slider.value = `${value}`.trim();
       this.#slider.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
     }
   }
+  /**
+ * Get the minimum allowed value for the luminescence slider.
+ * @type {string}
+ */
   get luminescenceSliderMin() {
     return this.#slider.min;
   }
-
+  /**
+   * Get the maximum allowed value for the luminescence slider.
+   * @type {string}
+   */
   get luminescenceSliderMax() {
     return this.#slider.max;
   }
 
   /**
-   * Description placeholder
-   *
-   * @param {string} color 
+   * @param {string} color Color to test.
    * @returns {boolean} 
    */
   isLegalColor(color) {
-    debuglog("isLegel",color);
-    if ((this.#colorMode.trim() === "darker".trim() && formatHex(color.trim()) === formatHex(noneDarker.trim()))
-      || (this.#colorMode.trim() == "lighter".trim() && formatHex(color.trim()) === formatHex(noneLighter.trim())))
-      return false;
-    return true;
+    // if ((this.#colorMode.trim() === "darker".trim() && formatHex(color.trim()) === formatHex(noneDarker.trim()))
+    //   || (this.#colorMode.trim() == "lighter".trim() && formatHex(color.trim()) === formatHex(noneLighter.trim())))
+    //   return false;
+    // return true;
+    let retC = false;
+    if (color)
+      retC = true;
+    debuglog("isLegel", retC, color);
+    return retC;
   }
-  // 
+  /**
+   * Set the font to the paragraphs for the preview texts.
+   *
+  */
   #setPreviewFont() {
-
     /**
-     * Set the font to the paragraphs for the preview texts.
-     *
      * @type {NodeListOf<HTMLParagraphElement>}
      */
     const previews = this.#root.querySelectorAll(".text-content");
@@ -630,19 +701,36 @@ export class HTMLA11yColorCard extends HTMLElement {
      * @type {import("culori").Hsl}
      */
     const hslfg = /** @type {import("culori").Hsl} */(hsl(fg));
+    // switch (type) {
+    //   case "hue":
+    //     hslfg.h = this.#curColor.hue;
+    //     fg = /** @type {string} */(formatHex(hslfg));
+    //     break;
+    //   case "sat":
+    //     hslfg.s = this.#curColor.sat;
+    //     fg = /** @type {string} */(formatHex(hslfg));
+    //     break;
+    //   /* c8 ignore next */
+    //   default:
+    //     break;
+    // }
     switch (type) {
-      case "hue":
-        hslfg.h = this.#curColor.hue;
-        fg = /** @type {string} */(formatHex(hslfg));
-        break;
       case "sat":
         hslfg.s = this.#curColor.sat;
+        if (hslfg.s == 0) {
+          fg = /** @type {string} */(formatHex(hslfg));
+          break;
+        };
+      // eslint-disable-next-line no-fallthrough
+      case "hue":
+        hslfg.h = this.#curColor.hue;
         fg = /** @type {string} */(formatHex(hslfg));
         break;
       /* c8 ignore next */
       default:
         break;
     }
+
     para.style.setProperty("--contrast-color", fg);
     para.dataset.fgColor = fg;
     const ratio = wcagContrast(bg, fg);
@@ -777,7 +865,7 @@ export class HTMLA11yColorCard extends HTMLElement {
    * possible examples.
    */
   #filterModes() {
-    const filter = `${this.#colorMode}${this.#contrastMode}`;
+    const filter = `${this.#colorMode}${this.#contrastMode}`.trim();
     this.#curExamplesCVD = HTMLA11yColorCard.#examplesCVD.filter(value => value.includes(filter.trim())
     );
     this.#curExamples = HTMLA11yColorCard.#examples.filter(value => value.includes(filter.trim()));
@@ -802,28 +890,29 @@ export class HTMLA11yColorCard extends HTMLElement {
    * Set the slider for the luminance of this card to its
    * start value. If it can not be done, it deactivate it.
    *
-   * @param {boolean} active 
-   * @param {number} value 
+   * @param {boolean} enabled The slider is enabled  or disabled
+   * @param {number} value The value of the slider
    */
-  #set_lum_slider(active, value) {
-    console.log("set_lumen_slider", active, value, "ColorMode:", this.#colorMode);
+  #set_lum_slider(enabled, value) {
     this.removeEventListener("input", this.#set_new_lum);
-    // if (!this.#slider) return
-    if (!active) {
+    if (!enabled) {
       this.#slider.disabled = true;
+      this.#slider.setAttribute("min", "0");
+      this.#slider.setAttribute("max", "1");
+      this.#slider.setAttribute("value", `${value}`.trim());
       return;
     }
     this.#slider.disabled = false;
     if (this.#colorMode == "darker") {
       this.#slider.setAttribute("min", "0");
-      this.#slider.setAttribute("max", `${value} `);
-      this.#slider.setAttribute("value", `${value} `);
-      this.#slider.setAttribute("step", `${value / 100} `);
+      this.#slider.setAttribute("max", `${value}`.trim());
+      this.#slider.setAttribute("value", `${value}`.trim());
+      this.#slider.setAttribute("step", `${value / 100}`.trim());
     } else {
       this.#slider.setAttribute("max", "1");
-      this.#slider.setAttribute("min", `${value} `);
-      this.#slider.setAttribute("value", `${value} `);
-      this.#slider.setAttribute("step", `${(1 - value) / 100} `);
+      this.#slider.setAttribute("min", `${value}`.trim());
+      this.#slider.setAttribute("value", `${value}`.trim());
+      this.#slider.setAttribute("step", `${(1 - value) / 100}`.trim());
     }
     this.#slider.addEventListener("input", this.#set_new_lum);
   }
@@ -836,7 +925,11 @@ export class HTMLA11yColorCard extends HTMLElement {
   #set_new_lum = (event) => {
     /** @type {string} */
     const value = /** @type {HTMLInputElement} */ (event.target).value;
-    console.log("set_new_lum:", value);
+
+    // const min = parseFloat(this.#slider.min);
+    // const max = parseFloat(this.#slider.max);
+    // const valueF = parseFloat(value);
+    // /// console.log("lumSliderValue", value, valueF, min, max);
     /**
      * Description placeholder
      *
@@ -844,33 +937,27 @@ export class HTMLA11yColorCard extends HTMLElement {
      */
     const colors = this.#root.querySelectorAll(".text-content");
     /**
-     * Description placeholder
-     *
-     * @type {*}
+     * @type {import("../../utils/ColorContrastPair.js").ColorTupel}
      */
     let newFg;
 
     /**
-     * Description placeholder
-     *
-     * @type {*}
+     * @type {import("../../utils/ColorContrastPair.js").ColorTupel}
      */
     let newBg;
     colors.forEach((item, _idx) => {
       if (item.classList.contains("sample-normal")) {
 
         /**
-         * Description placeholder
-         *
          * @type {import("culori").Hsl|string}
          */
         let fg = /** @type {import("culori").Hsl} */(hsl(item.dataset.fgColor));
         fg.l = parseFloat(value);
+
         fg = formatHex(fg);
 
+
         /**
-         * Description placeholder
-         *
          * @type {string}
          */
         const bg = /** @type {string} */(item.dataset.bgColor);
@@ -888,8 +975,6 @@ export class HTMLA11yColorCard extends HTMLElement {
         const ratio = wcagContrast(bg, fg);
         item.style.setProperty("--contrast-color", fg);
         item.style.setProperty("--main-color", bg);
-
-
         this.#updateRatio(item,
           ratio,
           "failed",
@@ -938,8 +1023,7 @@ export class HTMLA11yColorCard extends HTMLElement {
 
 
   /**
-   * Description placeholder
-   *
+   * Update the color format
    * @param {string} color 
    */
   #updateColorFormats(color) {
@@ -957,7 +1041,7 @@ export class HTMLA11yColorCard extends HTMLElement {
   }
 
   /**
-   * 
+   * Update the ratio section of the card
    * @param {Element} elem 
    * @param {number} ratio
    * @param {string} cssClass
@@ -972,18 +1056,17 @@ export class HTMLA11yColorCard extends HTMLElement {
       ratioEntry.classList.add(cssClass);
   }
 
+
+  /** Update the whole UI */
   #updateUI() {
     let ratioFailed = true;
     this.#filterModes();
     this.#calculateContrast();
 
     /**
-     * Description placeholder
-     *
      * @type {string}
      */
-    // @ts-ignore
-    const mainColor = formatHex(this.#curColor.originalColor);
+    const mainColor = /**@type {string}*/(formatHex(this.#curColor.originalColor));
     this.#curExamples.forEach((item) => {
       // eslint-disable-next-line no-unused-vars
       const [query, func, minRatio] = item;
@@ -1003,8 +1086,8 @@ export class HTMLA11yColorCard extends HTMLElement {
       samples.forEach(sample => {
         if (this.isLegalColor(formatHex(color))) {
 
-          sample.style.setProperty("--contrast-color", `${color} `);
-          sample.dataset.fgColor = `${color}`;
+          sample.style.setProperty("--contrast-color", `${color}`.trim());
+          sample.dataset.fgColor = `${color}`.trim();
           ratioFailed = false;
           this.#set_lum_slider(!ratioFailed,
             /** @type {import("culori").Hsl} */(hsl(color)).l);
@@ -1016,10 +1099,9 @@ export class HTMLA11yColorCard extends HTMLElement {
         }
         sample.style.setProperty("--main-color", mainColor);
         sample.dataset.bgColor = mainColor;
-        const funcr = `${func}Ratio`;
+        const funcr = `${func}Ratio`.replace(" ", "");
         // @ts-ignore
         let currRatio = parseFloat(this.#curColor[funcr]);
-        // @ts-ignore
         this.#updateRatio(
           sample,
           currRatio,
@@ -1027,62 +1109,57 @@ export class HTMLA11yColorCard extends HTMLElement {
           (currRatio < (parseFloat(this.#contrastMode) / 10))
         );
 
-        this.#updateColorFormats(`${color} `);
+        this.#updateColorFormats(`${color}`.trim());
       });
 
     });
     /**
-     * Description placeholder
-     *
-     * @type {[string,string,string,string]}
+     * @type {import("../../utils/ColorContrastPair.js").ColorTupel}
      */
     const cdvBackground = this.#curColor.originalColorDef;
     this.#curExamplesCVD.forEach(item => {
       const [queryclass, func, idx, minRatio] = item;
       /**
-       * Description placeholder
-       *
-       * @type {HTMLParagraphElement}
+        * @type {HTMLParagraphElement}
        */
-      // @ts-ignore
-      const sample = /** @type {HTMLParagraphElement} */(this.#root.querySelector(queryclass));
+      const sampleParagraphs = /** @type {HTMLParagraphElement} */(this.#root.querySelector(queryclass));
       let color;
 
+      const funcDef = `${func}Def`.replace(" ", "").trim();
+      /**
+       * @type {import("../../utils/ColorContrastPair.js").ColorTupel}
+       */
       // @ts-ignore
-      const cdvColor = this.#curColor[`${func}Def`];
-      if (cdvColor[idx] ?? null) {
+      const cdvColor = /** @type {import("../../utils/ColorContrastPair.js").ColorTupel}*/(this.#curColor[funcDef]);
+      if (cdvColor[idx]) {
         color = cdvColor[idx];
       }
       else {
         color = cdvBackground[idx];
       }
-      sample.style.setProperty("--contrast-color", color);
-      sample.dataset.fgColor = color;
+      sampleParagraphs.style.setProperty("--contrast-color", color);
+      sampleParagraphs.dataset.fgColor = color;
 
 
       /**
-       * Description placeholder
-       *
        * @type {string}
        */
       let backgroundColor = cdvBackground[idx];
       /**
-       * Description placeholder
-       *
        * @type {number}
        */
       const currRatio = wcagContrast(backgroundColor, color);
       if (currRatio > minRatio) {
-        sample.style.setProperty("--contrast-color", color);
+        sampleParagraphs.style.setProperty("--contrast-color", color);
       } else {
-        sample.style.setProperty("--contrast-color", color);
+        sampleParagraphs.style.setProperty("--contrast-color", color);
       }
 
-      sample.style.setProperty("--main-color", backgroundColor);
-      sample.dataset.bgColor = backgroundColor;
+      sampleParagraphs.style.setProperty("--main-color", backgroundColor);
+      sampleParagraphs.dataset.bgColor = backgroundColor;
 
       this.#updateRatio(
-        sample,
+        sampleParagraphs,
         currRatio,
         "failed",
         (currRatio < minRatio)
@@ -1090,20 +1167,64 @@ export class HTMLA11yColorCard extends HTMLElement {
 
     });
   }
-  // #if !PRODUCTION
+  // #if !PROD
   /* c8 ignore start */
+  /**
+   * @showGroups
+   * @module
+   */
+
+  /**
+   * Description placeholder
+   *
+   * @group Testing
+   * @type {ShadowRoot}
+   */
   get test_root() {
     return this.#root;
   }
 
-
+  /**
+   * Description placeholder
+   *
+   * @group Testing
+   * @type {HTMLInputElement}
+   */
   get test_slider() {
     return this.#slider;
   }
 
+  /**
+   * Description placeholder
+   *
+   * @group Testing
+   * @type {(value: any) => void}
+   */
   test_set_contrast = this.#set_contrast;
 
+  /**
+   * Description placeholder
+   * @group Testing
+   * @type {(event: InputEvent) => void}
+   */
   test_set_new_lum = this.#set_new_lum;
+
+
+  /**
+   * Get the currend caluculated hue fron this card.
+   * 
+   * @group Testing
+   * @returns {number|null} 
+   */
+  test_get_curr_hue() {
+
+    const colorOut = /** @type {HTMLElement} */(this.#root.querySelector(".contrast-readout.normal45"));
+    const entry = /** @type {HTMLElement} */(colorOut.querySelector(".hsl"));
+    const hslString = entry.innerText;
+    const match = hslString.match(/hsl\(\s*([0-9.]+)/);
+    const hueValue = match ? parseFloat(match[1]) : null;
+    return hueValue;
+  }
   /* c8 ignore stop */
   // #endif
 

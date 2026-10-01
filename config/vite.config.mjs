@@ -1,10 +1,13 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vitest/config';
 import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite'
+import PluginInspect from 'vite-plugin-inspect';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [
-    PreprocessorDirectives({ /* options */ }), // Should be the first plugin
+    PreprocessorDirectives({},), // Should be the first plugin
+    PluginInspect(),
   ],
   test: {
     include:[
@@ -22,11 +25,6 @@ export default defineConfig({
       "docu",
       "dist",
     ],
-    // Aktiviert globale Test-Funktionen (describe, it, expect), 
-    // sodass du sie nicht in jeder Datei extra importieren musst.
-    // globals: true,
-    // Da wir hier reine Logik-Utils testen, reicht die Node-Umgebung völlig aus
-    // environment: 'node',
     environment: 'happy-dom',
     coverage: {
       provider: 'v8',
@@ -41,5 +39,23 @@ export default defineConfig({
       "default",
       ["html", { outputDir: "./docs/html" }] 
     ],
-  },
+  }, 
+  build: {
+    lib: {
+      entry: resolve(import.meta.dirname, '../src/index.js'),
+      name: 'A11yColorComponents',
+      fileName: 'a11y-color-components',
+      formats: ['es', 'umd'],
+    },
+    rollupOptions: {
+      // Verhindert, dass externe/globale Dinge als App-Bundle interpretiert werden
+      external: ['culori'],
+      output: {
+        // Globale Variablen für UMD-Build, falls nötig
+        globals: {
+          culori: 'culori',
+        },
+      },
+    },
+  }
 });

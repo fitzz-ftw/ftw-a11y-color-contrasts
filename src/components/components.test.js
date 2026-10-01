@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, test } from "vitest";
 
-import { ControlEventType, HTMLColorControl } from "./color-controler/HtmlColorControl.js";
+import { ControlEventEnum, HTMLColorControl } from "./color-controler/HtmlColorControl.js";
 import {  HTMLA11yColorCard } from "./color-card/HtmlA11yColorCard.js";
 
 if (!customElements.get("html-color-card")) {
@@ -48,7 +48,7 @@ describe("Intern methodes emitted because of interactive Actions", () => {
   beforeEach(() => {
     eventDetail = {
       color: { new: "", old: "" },
-      eventsource: "",
+      eventsource: "initial",
       font: { new: "", old: "" },
       hue: { new: "", old: "" },
       sat: { new: "", old: "" },
@@ -120,11 +120,9 @@ describe("Intern methodes emitted because of interactive Actions", () => {
     document.body.appendChild(testCard);
     control.addCard("");
     const detail = {...eventDetail};
-    detail.eventsource = ControlEventType.INITIAL;
+    detail.eventsource = ControlEventEnum.INITIAL;
     control.test_nullNewBranchesUpdateConnectedCards(detail);
-    detail.eventsource = ControlEventType.BASE_COLOR;
+    detail.eventsource = ControlEventEnum.BASE_COLOR;
     control.test_nullNewBranchesUpdateConnectedCards(detail);
-
   });
-
 });

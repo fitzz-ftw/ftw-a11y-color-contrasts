@@ -2,7 +2,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, test, vi } from 'vitest';
 
-import { ControlEventType, HTMLColorControl } from './HtmlColorControl.js';
+import { ControlEventEnum, HTMLColorControl } from './HtmlColorControl.js';
 
 if (!customElements.get('html-color-control')) {
   customElements.define('html-color-control', HTMLColorControl);
@@ -29,7 +29,7 @@ describe('HTMLColorControl (Web Designer BDD Perspective)', () => {
     document.body.appendChild(control);
     eventDetail = {
       color: { new: "", old: "" },
-      eventsource: "",
+      eventsource: "initial",
       font: { new: "", old: "" },
       hue: { new: "", old: "" },
       sat: { new: "", old: "" },
@@ -105,7 +105,7 @@ describe('HTMLColorControl (Web Designer BDD Perspective)', () => {
 
     // Hier kannst du jetzt prüfen, ob z.B. das Event gefeuert wurde
   });
- 
+
   it('should initialize UI with "initial-color"', () => {
     const controlstr = "<html-color-control id='c1' initial-color='#ff0000' ></html-color-control>";
     document.body.innerHTML = controlstr;
@@ -114,7 +114,7 @@ describe('HTMLColorControl (Web Designer BDD Perspective)', () => {
 
     expect(eventDetail.color.new).toBe("#ff0000");
     expect(eventDetail.eventsource).toBe('base-color');
-    
+
 
     document.body.innerHTML = "";
 
@@ -142,7 +142,7 @@ describe('HTMLColorControl (Web Designer BDD Perspective)', () => {
 
     expect(eventDetail.text.new).toBe("Hello world");
     expect(eventDetail.eventsource).toBe('preview-text');
-    
+
 
     document.body.innerHTML = "";
 
@@ -165,7 +165,7 @@ describe('HTMLColorControl (Web Designer BDD Perspective)', () => {
 
 });
 
-describe("The JS API of the component",()=>{
+describe("The JS API of the component", () => {
   /**
    * Description placeholder
    *
@@ -180,7 +180,7 @@ describe("The JS API of the component",()=>{
     document.body.appendChild(control);
     eventDetail = {
       color: { new: "", old: "" },
-      eventsource: "",
+      eventsource: "initial",
       font: { new: "", old: "" },
       hue: { new: "", old: "" },
       sat: { new: "", old: "" },
@@ -196,14 +196,14 @@ describe("The JS API of the component",()=>{
     control.remove();
   });
 
-  it("change the color",()=>{
+  it("change the color", () => {
     control.color = "rgb(0, 255,0)";
     expect(eventDetail.color.new).toBe(control.color);
   });
-  it("changes the preview text",()=>{
+  it("changes the preview text", () => {
     control.previewText = "Hello world";
     expect(eventDetail.text.new).toBe(control.previewText);
-    
+
   });
 
 
@@ -224,7 +224,7 @@ describe("Internal events on interaction with UI", () => {
     document.body.appendChild(control);
     eventDetail = {
       color: { new: "", old: "" },
-      eventsource: "",
+      eventsource: "initial",
       font: { new: "", old: "" },
       hue: { new: "", old: "" },
       sat: { new: "", old: "" },
@@ -334,9 +334,9 @@ describe("Internal events on interaction with UI", () => {
 
 
   });
-  test("alls new values of change details are null",()=>{
+  test("alls new values of change details are null", () => {
     const detail = eventDetail;
-    detail.eventsource = ControlEventType.INITIAL;
+    detail.eventsource = ControlEventEnum.INITIAL;
     control.test_nullNewBranchesUpdateConnectedCards(detail);
   });
 

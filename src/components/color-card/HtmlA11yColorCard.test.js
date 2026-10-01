@@ -41,10 +41,10 @@ describe('HtmlA11yColorCard', () => {
     // const element = /** @type {HTMLA11yColorCard} */ (document.body.querySelector('html-color-card'));
     let validColor = element.isLegalColor("#ffffff");
     expect(validColor).toBeDefined();
-    expect(validColor).toBe(false);
+    expect(validColor).toBe(true);
     element.setAttribute("mode", "lighter");
     validColor = element.isLegalColor("#000000");
-    expect(validColor).toBe(false);
+    expect(validColor).toBe(true);
   });
 
 });
@@ -367,47 +367,65 @@ describe('Public JavaScript API and programmatic usage', () => {
 
     });
   });
-  describe("Checking internal methods for developers of this web component", () => {
-    /** @type {HTMLA11yColorCard} */
-    let element;
+});
+describe("Checking internal methods for developers of this web component", () => {
+  /** @type {HTMLA11yColorCard} */
+  let element;
 
-    beforeEach(() => {
-      document.body.innerHTML = '';
-      element = /** @type {HTMLA11yColorCard} */ (document.createElement('html-color-card'));
-      document.body.appendChild(element);
-    });
-    test("should warn developers when an unimplemented contrast value is provided", () => {
-      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => { });
+  beforeEach(() => {
+    document.body.innerHTML = '';
+    element = /** @type {HTMLA11yColorCard} */ (document.createElement('html-color-card'));
+    document.body.appendChild(element);
+  });
+  test("should warn developers when an unimplemented contrast value is provided", () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => { });
 
-      // Hier den noch nicht implementierten Wert triggern/setzen
-      element.test_set_contrast("5");
+    // Hier den noch nicht implementierten Wert triggern/setzen
+    element.test_set_contrast("5");
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Wrong contrast mode got") // oder dein spezifischer Text
-      );
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining("Wrong contrast mode got") // oder dein spezifischer Text
+    );
 
-      // Mehrere Argumente im Test prüfen:
-      // expect(consoleSpy).toHaveBeenCalledWith(
-      //   expect.stringContaining("Unimplemented contrast"),
-      //   expect.any(Array) // oder das konkrete Array
-      // );
+    // Mehrere Argumente im Test prüfen:
+    // expect(consoleSpy).toHaveBeenCalledWith(
+    //   expect.stringContaining("Unimplemented contrast"),
+    //   expect.any(Array) // oder das konkrete Array
+    // );
 
-      consoleSpy.mockRestore();
-    });
-    test("Ratio color is set correct on normal sample", () => {
-      document.body.innerHTML = /*html*/`
+    consoleSpy.mockRestore();
+  });
+  test("Ratio color is set correct on normal sample", () => {
+    document.body.innerHTML = /*html*/`
     <html-color-card mode="darker"></html-color-card>
   `;
-      const element = /** @type {HTMLA11yColorCard} */ (document.body.querySelector('html-color-card'));
-      expect(element).toBeDefined();
-      element.curColor = "#000000";
-      const ratioElemNone = /** @type {HTMLParagraphElement} */ (element.test_root.querySelector(".row-ratio.none"));
-      // console.log(ratioElemNone.classList.contains("failed"))
-      const ratioElemRed = /** @type {HTMLParagraphElement} */ (element.test_root.querySelector(".row-ratio.red"));
-      expect(ratioElemRed).toBeDefined();
-      // console.log(ratioElemRed.classList.contains("failed"))
-      expect(ratioElemNone.classList.contains("failed")).toBeTruthy();
-      expect(ratioElemNone.classList.contains("failed")).toBeTruthy();
-    });
+    const element = /** @type {HTMLA11yColorCard} */ (document.body.querySelector('html-color-card'));
+    expect(element).toBeDefined();
+    element.curColor = "#000000";
+    const ratioElemNone = /** @type {HTMLParagraphElement} */ (element.test_root.querySelector(".row-ratio.none"));
+    console.log(ratioElemNone.innerText);
+    // console.log(ratioElemNone.classList.contains("failed"))
+    const ratioElemRed = /** @type {HTMLParagraphElement} */ (element.test_root.querySelector(".row-ratio.red"));
+    expect(ratioElemRed).toBeDefined();
+    // console.log(ratioElemRed.classList.contains("failed"))
+    expect(ratioElemNone.classList.contains("failed")).toBeTruthy();
+    expect(ratioElemRed.classList.contains("failed")).toBeTruthy();
+  });
+  test.each([0, 180, 360])('should preserve the hue (%i) when saturation drops to 0 and recovers', (initialHue) => {
+    element.hue = initialHue;
+    const testHue = initialHue != 360 ? initialHue : 0;
+    element.sat = 1; // Sicherstellen, dass wir starten
+
+    expect(element.test_get_curr_hue()).toBe(testHue);
+    // 1. Sättigung auf 0 drehen (Achromatischer Zustand)
+    element.sat = 0;
+    expect(element.test_get_curr_hue()).toBe(0);
+
+    // 2. Sättigung wieder erhöhen
+    element.sat = 0.5;
+    // expect(element.test_get_curr_hue()).not.toBe(0);
+
+    // 3. Prüfen, ob der ursprüngliche Hue erhalten geblieben ist
+    expect(element.test_get_curr_hue()).toBe(testHue);
   });
 });

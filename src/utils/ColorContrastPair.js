@@ -1,3 +1,17 @@
+/**
+ * @packageDocumentation
+ * 
+ * ## Abstract
+ * 
+ * Color contrast pair management and accessibility calculation module.
+ * 
+ * ## Architecture & Usage
+ * 
+ * Provides the {@link ColorContrastPairs} class to compute, evaluate, and search for 
+ * WCAG-compliant contrast thresholds (lighter and darker variants) as well as 
+ * simulating various color vision deficiencies (CVD).
+ * 
+ */
 // @ts-check
 
 // import { formatHex, hsl, wcagContrast, wcagLuminance } from "culori"
@@ -13,20 +27,25 @@ import {
   wcagLuminance
 } from "culori";
 
+/** 
+ * @typedef {[string,string, string,string]} ColorTupel -  Tuple containing the 4 values for vision impairment simulations.
+ */
 
 /**
  * Marker and init color for all what schould be darker 
  *
- * @type {"#ffffff"}
+ * @type {""}
  */
-export const noneDarker = "#ffffff";
+export const noneDarker = "";
+// export const noneDarker = "#ffffff";
 
 /**
  * Marker and init color for all what schould be lighter 
  *
- * @type {"#000000"}
+ * @type {""}
  */
-export const noneLighter = "#000000";
+export const noneLighter = "";
+// export const noneLighter = "#000000";
 
 
 /**
@@ -172,7 +191,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from original color.
    *
-   * @returns {[string,string,string,string]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get originalColorDef() {
@@ -191,7 +210,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from darker color with 7:1 contrast.
    *
-   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel|never[]} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get darker70Def() {
@@ -223,7 +242,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from lighter color with 7:1 contrast.
    *
-   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel|never[]} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get lighter70Def() {
@@ -254,7 +273,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from darker color with 4.5:1 contrast.
    *
-   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel|never[]} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get darker45Def() {
@@ -285,7 +304,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from lighter color with 4.5:1 contrast.
    *
-   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel|never[]} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get lighter45Def() {
@@ -316,7 +335,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from darker color with 3:1 contrast.
    *
-   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel|never[]} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get darker30Def() {
@@ -347,7 +366,7 @@ export class ColorContrastPairs {
   /**
    * The color value for the 4 color deficiencies from lighter color with 3:1 contrast.
    *
-   * @returns {[string,string,string,string]|never[]} - Tuple of colorstrings with the 
+   * @returns {ColorTupel|never[]} - Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   get lighter30Def() {
@@ -378,18 +397,25 @@ export class ColorContrastPairs {
   /**
    * Create the color value for the 4 color deficiencies.
    *
-   * @param {string|import("culori").Hsl} color 
-   * @returns {[string,string,string,string]} Tuple of colorstrings with the 
+   * @param {string|import("culori").Color} color 
+   * @returns {ColorTupel} Tuple of colorstrings with the 
    *      deficiencies in following order: red, green, blue and color.
    */
   getDeficiencies(color) {
-    if (typeof color === 'string')
-      color = /** @type {import("culori").Hsl} */(parse(color));
+    if (typeof color !== 'string')
+      color = /** @type {string} */(formatHex(color));
+    
+    /**
+     * Description placeholder
+     *
+     * @type {import("culori").Color}
+     */
+    const colorT = /** @type {import("culori").Color} */(parse(color));
     return [
-      formatHex(filterDeficiencyProt(this.#deficiency)(color)),
-      formatHex(filterDeficiencyDeuter(this.#deficiency)(color)),
-      formatHex(filterDeficiencyTrit(this.#deficiency)(color)),
-      formatHex(filterGrayscale(this.#deficiency)(color)),
+      formatHex(filterDeficiencyProt(this.#deficiency)(colorT)),
+      formatHex(filterDeficiencyDeuter(this.#deficiency)(colorT)),
+      formatHex(filterDeficiencyTrit(this.#deficiency)(colorT)),
+      formatHex(filterGrayscale(this.#deficiency)(colorT)),
     ];
   }
 
@@ -428,7 +454,13 @@ export class ColorContrastPairs {
   findThresholdBrighterL(targetContrast, minL, maxL) {
     let low = minL;
     let high = maxL;
-    let bestHex = "#000000";
+    
+    /**
+     * Description placeholder
+     *
+     * @type {string}
+     */
+    let bestHex = noneLighter;
 
     // Für hellere Varianten wollen wir von unten (minL) 
     // nach oben wandern, bis der Kontrast passt, und dann den 
@@ -479,7 +511,13 @@ export class ColorContrastPairs {
   findThresholdDarkerL(targetContrast, minL, maxL) {
     let low = minL;
     let high = maxL;
-    let bestHex = "#ffffff";
+    
+    /**
+     * Description placeholder
+     *
+     * @type {string}
+     */
+    let bestHex = noneDarker;
 
     for (let i = 0; i < this.#recursions; i++) {
       const mid = (low + high) / 2;
@@ -520,27 +558,28 @@ export class ColorContrastPairs {
     // --- DARKER VARIANTS SEARCH (Range: [0, bgLum]) ---
     // Scout for 3.0 first, then leverage bounds for 4.5 and 7.0
     this.#darker30 = this.findThresholdDarkerL(3.0, 0, this.lum);
-    if (this.#darker30 !== '#ffffff') {
-      const l30 = /** @type {import("culori").Hsl} */(hsl(this.#darker30)).l;
+    if (this.#darker30 !== noneDarker) {
+   ///   console.log("Calc d30",this.#darker30,hsl(this.#darker30));
+      const l30 = /** @type {import("culori").Hsl} */(hsl(this.#darker30))?.l; //||0;
       this.#darker45 = this.findThresholdDarkerL(4.5, 0, l30);
     }
-    if (this.#darker45 !== '#ffffff') {
-      const l45 = /** @type {import("culori").Hsl} */(hsl(this.#darker45)).l;
+    if (this.#darker45 !== noneDarker) {
+      const l45 = /** @type {import("culori").Hsl} */(hsl(this.#darker45))?.l; //||0;
       this.#darker70 = this.findThresholdDarkerL(7.0, 0, l45);
-    } else if (this.#darker30 !== '#ffffff') {
+    } else if (this.#darker30 !== noneDarker) {
       this.#darker70 = this.findThresholdDarkerL(7.0, 0, /** @type {import("culori").Hsl} */(hsl(this.#darker30)).l);
     }
 
     // --- BRIGHTER VARIANTS SEARCH (Range: [bgLum, 1]) ---
     this.#lighter30 = this.findThresholdBrighterL(3.0, this.lum, 1);
-    if (this.#lighter30 !== '#000000') {
+    if (this.#lighter30 !== noneLighter) {
       const l30 = /** @type {import("culori").Hsl} */(hsl(this.#lighter30)).l;
       this.#lighter45 = this.findThresholdBrighterL(4.5, l30, 1);
     }
-    if (this.#lighter45 !== '#000000') {
+    if (this.#lighter45 !== noneLighter) {
       const l45 = /** @type {import("culori").Hsl} */(hsl(this.#lighter45)).l;
       this.#lighter70 = this.findThresholdBrighterL(7.0, l45, 1);
-    } else if (this.#lighter30 !== '#000000') {
+    } else if (this.#lighter30 !== noneLighter) {
       this.#lighter70 = this.findThresholdBrighterL(7.0, /** @type {import("culori").Hsl} */(hsl(this.#lighter30)).l, 1);
     }
 

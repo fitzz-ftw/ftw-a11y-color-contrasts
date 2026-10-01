@@ -1,3 +1,26 @@
+/** 
+ * @packageDocumentation
+ * 
+ * ## Abstract
+ * 
+ * A color controller component that allows users to interactively pick and adjust base colors,
+ * hues, saturation, font styles, and preview texts.
+ *
+ * ## Architecture & Usage 
+ *
+ * ### Target Binding (`for` attribute)
+ * The control can be linked to target elements or cards using its `for` attribute.
+ * **"This Controller is for: [Target-ID]"** — by specifying the ID of a target 
+ * {@link HTMLA11yColorCard},
+ * the controller automatically synchronizes and dispatches state updates to that element.
+ *
+ * ### Custom Events
+ * Dispatches the`config-change` custom event ({@link ConfigChangeEvent}) to notify listeners about changes
+ * in the element. Its `detail` attribute has {@link OnChangeDetail} interface.
+ *
+ * 
+ */
+
 //@ts-check
 
 import {
@@ -34,31 +57,89 @@ if (typeof modulecss == "string") {
 
 /**
  * @enum {string}
+ * Defines the types of control events dispatched by the color controller component.
+ * 
  */
-export const ControlEventType = Object.freeze({
+export const ControlEventEnum = Object.freeze({
+  /** Triggered when the controller is initially loaded or reset. */
   INITIAL: "initial",
+  /** Triggered when the base color is modified. */
   BASE_COLOR: "base-color",
+  /** Triggered when the preview text content changes. */
   PREVIEW_TEXT: "preview-text",
+  /** Triggered when the active font family is updated. */
   FONT_FAMILY: "font-family",
+  /** Triggered when the hue slider value changes. */
   HUE: "hue",
+  /** Triggered when the saturation slider value changes. */
   SATURATION: "saturation"
 });
 
+// const ControlEventEnum=0;
+
 /**
- * @typedef {object} ChangedData
- * @property {string|null} old
- * @property {string|null} new 
+ * @typedef {ControlEventEnum[keyof ControlEventEnum]} ControlEventType
+ * An Alias for the entries of enum ControlEventType 
+ */
+
+/**
+ * @typedef {object} ChangedData - Data object of changed data
+ * @property {string|null} old - The value before the change
+ * @property {string|null} new - The value to which changed
+ */
+
+
+/**
  * 
+ * @typedef {object} OnChangeDetail Details payload dispatched with change events from the color controller.
+ * @property {ChangedData} hue Hue component change details.
+ * @property {ChangedData} sat Saturation component change details.
+ * @property {ChangedData} font Font family change details.
+ * @property {ChangedData} text Preview text change details.
+ * @property {ChangedData} color Base color change details.
+ * @property {ControlEventEnum} eventsource The source event type that triggered the change.
  */
+
+
+
 /**
- * @typedef {object} OnChangeDetail
- * @property {ChangedData} hue
- * @property {ChangedData} sat
- * @property {ChangedData} font
- * @property {ChangedData} text
- * @property {ChangedData} color
- * @property {ControlEventType[keyof ControlEventType]} eventsource
+ * Event for config of {@link HTMLColorControl} changed.
+ *
+ * @event
+ * @extends {Event}
  */
+export class ConfigChangeEvent extends Event {
+  
+  /**
+   * @type {OnChangeDetail} detail
+   */
+  #detail; 
+  /**
+   * @param {OnChangeDetail} detail - The change event details.
+   */
+  constructor(detail) {
+    super('config-change', {
+      bubbles: true,
+      composed: true, // Wichtig, wenn das Event aus dem Shadow DOM heraus bubbled!
+      cancelable: true
+    });
+    this.#detail= detail;
+    }
+  
+  /**
+   * Get all properties of the {@link HTMLColorControl} 
+   *  with old and new values.
+   * 
+   * @returns {OnChangeDetail} The change event details.
+   */
+  get detail(){
+    return this.#detail;
+  }
+
+}
+
+
+
 
 
 
@@ -102,7 +183,20 @@ const template =/*html*/`
 `;
 
 
-
+/**
+ * A color controller component that allows users to interactively pick and adjust colors.
+ * 
+ * ## Target Binding (`for` attribute)
+ * **This Controller is for:** [Target-ID] — by specifying the ID of a target 
+ * {@link HTMLA11yColorCard}
+ * via the `for` attribute, the controller automatically synchronizes state updates.
+ * 
+ ***Dispatches**:
+ *>  {@link ConfigChangeEvent}: Every time an attribute changed, interactive or programmatically.
+ *
+ * @class 
+ * @extends {HTMLElement}
+  */
 export class HTMLColorControl extends HTMLElement {
   #root = this.attachShadow({ mode: "closed" });
 
@@ -192,7 +286,7 @@ export class HTMLColorControl extends HTMLElement {
       old: null,
       new: null
     },
-    eventsource: ControlEventType.INITIAL
+    eventsource: ControlEventEnum.INITIAL
   };
 
 
@@ -231,9 +325,9 @@ export class HTMLColorControl extends HTMLElement {
 
   /**
    * Defines the attributes that should trigger attributeChangedCallback when modified.
-   *
-   * @static
+   * 
    * @type {string[]}
+   * @internal
   */
   static get observedAttributes() {
     return [
@@ -249,25 +343,9 @@ export class HTMLColorControl extends HTMLElement {
 
   /**
    * Invoked each time the custom element is appended into a document-connected element.
+   * @internal
    */
-
   connectedCallback() {
-
-    // this.#hueValueDisplay =  /** @type {HTMLSpanElement} */(this.#root.getElementById("hue-value"))
-    // this.#satValueDisplay = /** @type {HTMLSpanElement} */(this.#root.getElementById("sat-value"))
-    // this.#hueSlider = /** @type {HTMLInputElement} */(this.#root.getElementById("hue-slider"))
-    // this.#satSlider = /** @type {HTMLInputElement} */(this.#root.getElementById("sat-slider"))
-    // this.#colorInput = /** @type {HTMLInputElement} */(this.#root.getElementById("color-input"))
-    // this.#colorPicker =/** @type {HTMLInputElement} */ (this.#root.getElementById("color-picker"))
-    // this.#previewText = /** @type {HTMLInputElement} */ (this.#root.getElementById("preview-text"))
-    // this.#fontFamily = /** @type {HTMLSelectElement} */ (this.#root.getElementById("font-select"))
-    // this.#hueSlider.addEventListener("input", this.#onHueInput)
-    // this.#satSlider.addEventListener("input", this.#onSatInput)
-    // this.#colorInput.addEventListener("change", this.#onColorInputChangeEvent)
-    // this.#colorPicker.addEventListener("change", this.#onColorPickerChange)
-    // this.#previewText.addEventListener("change", this.#onPreviewTextChange)
-    // this.#fontFamily.addEventListener("change", this.#onFontFamilyChange)
-
     const docfonts = document.fonts;
 
     let fonts;
@@ -306,6 +384,7 @@ export class HTMLColorControl extends HTMLElement {
    * @param {string|null} name - Name of the attribute.
    * @param {string|null} oldValue - The old value of the attribute.
    * @param {string|null} newValue - The new, current value of the attribute.
+   * @internal
   */
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue == newValue) {
@@ -334,21 +413,42 @@ export class HTMLColorControl extends HTMLElement {
         break;
       /* c8 ignore next */
       default:
-        console.warn(`Unhandled HTML attribut: ${name}`);
+        console.warn(`Unhandled HTML attribut: ${name}`.trim());
         break;
     }
   }
 
+  /**
+   * Get the color of the controler.
+   *
+   * @type {string}
+   */
   get color() {
     return this.#colorInput.value;
   }
+  /**
+   * Set the color of the controler.
+   *
+   * @type {string}
+   */
   set color(value) {
     this.#colorInput.value = value;
     this.#onColorInputChange(value);
   }
+
+  /**
+   * Get the preview text of the cdotroler.
+   *
+   * @type {string}
+   */
   get previewText() {
     return this.#previewText.value;
   }
+  /**
+   * Set the preview text of the cdotroler.
+   *
+   * @type {string}
+   */
   set previewText(value) {
     this.#previewText.value = value;
     this.#onPreviewTextChange(value);
@@ -358,7 +458,7 @@ export class HTMLColorControl extends HTMLElement {
   /**
    * Add card to controller
    *
-   * @param {string} cardId 
+   * @param {string} cardId An ID of a {@link HTMLA11yColorCard}
    */
   addCard(cardId) {
     if (cardId) {
@@ -368,9 +468,9 @@ export class HTMLColorControl extends HTMLElement {
     this.#collectCards();
   }
   /**
-   * Add card to controller
+   * Remove a card from controller
    *
-   * @param {string} cardId 
+   * @param {string} cardId An ID of a {@link HTMLA11yColorCard}
    */
   removeCard(cardId) {
     if (cardId && this.#connectedCards.has(cardId))
@@ -378,6 +478,9 @@ export class HTMLColorControl extends HTMLElement {
   }
   /**
    * Returns a map representing card IDs and their active state.
+   * 
+   * Active state is `true` if a {@link HTMLA11yColorCard} with the ID is attached to the
+   * contoller, else `false`.
    * @returns {Map<string, boolean>}
    */
   getCardStatuses() {
@@ -411,15 +514,11 @@ export class HTMLColorControl extends HTMLElement {
    *
    */
   #dispatchChangeEvent() {
-    this.dispatchEvent(new CustomEvent("config-change", {
-      detail: this.#changeDetail,
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(new ConfigChangeEvent(this.#changeDetail));
     this.#updateConnectedCards();
-    // if !PRODUCTION
+    // #if !PROD
     this.test_dispathChangeEvent();
-    // endif
+    // #endif
   }
   /**
    * Description placeholder
@@ -430,7 +529,7 @@ export class HTMLColorControl extends HTMLElement {
     const target = /** @type {HTMLSelectElement} */ (event.target);
     this.#changeDetail.font.old = this.#changeDetail.font.new;
     this.#changeDetail.font.new = target.value;
-    this.#changeDetail.eventsource = ControlEventType.FONT_FAMILY;
+    this.#changeDetail.eventsource = ControlEventEnum.FONT_FAMILY;
     this.#dispatchChangeEvent();
   };
 
@@ -453,7 +552,7 @@ export class HTMLColorControl extends HTMLElement {
   #onPreviewTextChange = (text) => {
     this.#changeDetail.text.old = this.#changeDetail.text.new;
     this.#changeDetail.text.new = text;
-    this.#changeDetail.eventsource = ControlEventType.PREVIEW_TEXT;
+    this.#changeDetail.eventsource = ControlEventEnum.PREVIEW_TEXT;
     this.#dispatchChangeEvent();
   };
 
@@ -468,7 +567,7 @@ export class HTMLColorControl extends HTMLElement {
     this.#hueValueDisplay.textContent = target.value;
     this.#changeDetail.hue.old = this.#changeDetail.hue.new;
     this.#changeDetail.hue.new = target.value;
-    this.#changeDetail.eventsource = ControlEventType.HUE;
+    this.#changeDetail.eventsource = ControlEventEnum.HUE;
 
 
     this.#dispatchChangeEvent();
@@ -483,7 +582,7 @@ export class HTMLColorControl extends HTMLElement {
     this.#satValueDisplay.textContent = `${(parseFloat(target.value) * 100).toFixed(1)} %`;
     this.#changeDetail.sat.old = this.#changeDetail.sat.new;
     this.#changeDetail.sat.new = target.value;
-    this.#changeDetail.eventsource = ControlEventType.SATURATION;
+    this.#changeDetail.eventsource = ControlEventEnum.SATURATION;
 
     this.#dispatchChangeEvent();
   };
@@ -509,7 +608,7 @@ export class HTMLColorControl extends HTMLElement {
     this.#colorPicker.value = color;
     this.#changeDetail.color.old = this.#changeDetail.color.new;
     this.#changeDetail.color.new = color;
-    this.#changeDetail.eventsource = ControlEventType.BASE_COLOR;
+    this.#changeDetail.eventsource = ControlEventEnum.BASE_COLOR;
 
     this.#dispatchChangeEvent();
   }
@@ -525,9 +624,9 @@ export class HTMLColorControl extends HTMLElement {
     if (this.#colorInput.value == value) return;
     this.#colorInput.value = value;
     const colorHsl = /** @type {import("culori").Hsl} */(hsl(value));
-    this.#hueSlider.value = `${colorHsl.h}`;
+    this.#hueSlider.value = `${colorHsl.h}`.trim();
     this.#hueValueDisplay.textContent = this.#hueSlider.value;
-    this.#satSlider.value = `${colorHsl.s}`;
+    this.#satSlider.value = `${colorHsl.s}`.trim();
 
     /**
      * Description placeholder
@@ -538,15 +637,14 @@ export class HTMLColorControl extends HTMLElement {
     this.#satValueDisplay.textContent = `${satDisp.toFixed(1)} %`;
     this.#changeDetail.color.old = this.#changeDetail.color.new;
     this.#changeDetail.color.new = value;
-    this.#changeDetail.eventsource = ControlEventType.BASE_COLOR;
+    this.#changeDetail.eventsource = ControlEventEnum.BASE_COLOR;
     this.#dispatchChangeEvent();
   };
 
   #updateConnectedCards() {
     const detail = this.#changeDetail;
-    console.log("update", this.#changeDetail, detail);
     const esrc = detail.eventsource;
-    const typ = ControlEventType;
+    const typ = ControlEventEnum;
     /** @type {Array<HTMLA11yColorCard>} */
     const cards = /** @type {Array<HTMLA11yColorCard>} */([...this.#connectedCards.entries()]
       .filter((item) => { return item[1] !== null; })
@@ -554,8 +652,10 @@ export class HTMLColorControl extends HTMLElement {
     cards.forEach((item) => {
       if (esrc == typ.HUE || esrc == typ.INITIAL) {
         const newHue = /** @type {string} */(detail.hue.new);
-        if (newHue)
+        if (newHue) {
           item.hue = parseFloat(newHue);
+          // console.log("newHue", newHue, item.hue);
+        }
       }
       if (esrc == typ.SATURATION || esrc == typ.INITIAL) {
         const newSat = /** @type {string} */(detail.sat.new);
@@ -591,53 +691,136 @@ export class HTMLColorControl extends HTMLElement {
     });
 
   }
-  // #if !PRODUCTION
+  // #if !PROD
   /* c8 ignore start */
+  /**
+ * @showGroups
+ * @module
+ */
+
+  /**
+   * @group Testing
+   */
   get test_root() {
     return this.#root;
   }
+  
+  /**
+   * Description placeholder
+   *
+   * @group Testing
+   * @type {HTMLInputElement}
+   */
   get test_hueSlider() {
     return this.#hueSlider;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLSpanElement}
+   */
   get test_hueValueDisplay() {
     return this.#hueValueDisplay;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLInputElement}
+   */
   get test_satSlider() {
     return this.#satSlider;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLSpanElement}
+   */
   get test_satValueDisplay() {
     return this.#satValueDisplay;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLInputElement}
+   */
   get test_colorInput() {
     return this.#colorInput;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLInputElement}
+   */
   get test_colorPicker() {
     return this.#colorPicker;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLInputElement}
+   */
   get test_previewText() {
     return this.#previewText;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {HTMLSelectElement}
+   */
   get test_fontFamily() {
     return this.#fontFamily;
   }
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {Array<string>}
+   */
   get test_connectedCardIds() {
     return [...this.#connectedCards.keys()];
   }
-
+  
+  /**
+   * Description placeholder
+   *
+  * @group Testing
+  * @type {OnChangeDetail}
+   */
   get test_changeDetail() {
     return this.#changeDetail;
   }
+  
+  /** 
+   * 
+  * @group Testing
+  */
   test_dispathChangeEvent() {
   }
 
   /**
    * Description placeholder
    *
-   * @param {OnChangeDetail} changeDetail 
+  * @group Testing
+  * @param {OnChangeDetail} changeDetail 
    */
   test_nullNewBranchesUpdateConnectedCards(changeDetail) {
     this.#changeDetail = changeDetail;
-    console.log(this.#changeDetail);
+    // console.log(this.#changeDetail);
     this.#updateConnectedCards();
   };
   /* c8 ignore stop */

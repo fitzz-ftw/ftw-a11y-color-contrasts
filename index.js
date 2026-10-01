@@ -6,9 +6,25 @@ customElements.define("a11y-card", HTMLA11yColorCard);
 import { HTMLColorControl } from "./src/components/color-controler/HtmlColorControl.js";
 customElements.define("a11y-control", HTMLColorControl);
 
+import { parse, filterDeficiencyDeuter, filterDeficiencyProt, filterDeficiencyTrit, hsl, formatHex } from "culori";
 
-
-// import { ColorContrastPairs } from "./src/utils/ColorContrastPair.js";
+const weiss = hsl(parse("#ffffff"));
+if (weiss) {
+  console.log("Index.js",filterDeficiencyDeuter(1)(weiss));
+  console.log("Index.js", filterDeficiencyProt(1)(weiss));
+  console.log("Index.js",filterDeficiencyTrit(1)(weiss));
+}else
+  console.log("No color Index.js", weiss, parse("#ffffff"));
+if(weiss){
+const weissh = parse(formatHex(weiss));
+if (weissh) {
+  console.log("Index.js", filterDeficiencyDeuter(1)(weissh));
+  console.log("Index.js", filterDeficiencyProt(1)(weissh));
+  console.log("Index.js", filterDeficiencyTrit(1)(weissh));
+} else
+  console.log("No color Index.js", weissh, parse("#ffffff"));
+};
+  // import { ColorContrastPairs } from "./src/utils/ColorContrastPair.js";
 // import { hsl, formatHex } from "culori";
 
 // const control =/** @type {HTMLA11yColorCard} */(document.getElementById("a11y-ctrl"));

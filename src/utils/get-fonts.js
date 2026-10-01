@@ -1,3 +1,17 @@
+/**
+ * @packageDocumentation
+ * 
+ * 
+ * ## Abstract
+ * 
+ * Font utility module for processing and populating font selection lists.
+ * 
+ *  ## Architecture & Usage
+ * 
+ * Provides helper functions to generate structured, sorted font lists including 
+ * system defaults and separators, and to populate HTML select elements.
+ * 
+ */
 //@ts-check
 
 /**

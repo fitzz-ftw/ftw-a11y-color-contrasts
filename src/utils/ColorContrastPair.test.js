@@ -182,9 +182,9 @@ describe('ColorContrastPairs (BDD - Fachliche Anforderungen)', () => {
     // Test für ein bewusst ungültiges oder extremes Szenario, 
     // falls man direkt die Suchfunktion oder Grenzwerte prüft:
     const extremeResult_dark = pair_dark.findThresholdDarkerL(99.0, 0, 0.1); // Unrealistisches Ziel
-    expect(extremeResult_dark).toBe('#ffffff');
+    expect(extremeResult_dark).toBe('');
     const extremeResult_light = pair_light.findThresholdBrighterL(99.0, 0, 0.1); // Unrealistisches Ziel
-    expect(extremeResult_light).toBe('#000000');
+    expect(extremeResult_light).toBe('');
 
   });
 

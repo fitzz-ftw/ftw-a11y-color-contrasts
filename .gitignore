@@ -1,6 +1,9 @@
 docs/api
-
+docs/publicapi
 docssrc/
 dist/
 node_modules/
 html/
+debug*.*
+index.html.dev
+*.log

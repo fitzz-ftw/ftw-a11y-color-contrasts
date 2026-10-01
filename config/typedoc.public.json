@@ -1,12 +1,9 @@
 {
   "entryPoints": ["../src/**/*.js"],
   "entryPointStrategy": "expand",
-  "out": "../docs/api",
-  "exclude": [
-    "../src/**/*.test.js",
-    "../src/**/*.browser-test.js"
-  ],
-  "tsconfig": "./tsconfig.json",
+  "out": "../docs/publicapi",
+  "exclude":["../src/**/*.test.js", "../src/**/*.browser-test.js"],
+  "tsconfig": "./tsconfig.public.json",
   "gitRemote": "local",
   "readme": "../README.md",
   "plugin": [
@@ -14,16 +11,17 @@
     "typedoc-plugin-coverage",
     "../utils/typedoc-plugin-smart-docs.js"
   ],
-  "logLevel": "Info",
-  "excludeTestMembers": false,
+  "logLevel":"Info",
+  "excludeTestMembers": true,
   "excludeTestMembersVerbose": false,
-  "forceExportAll": true,
-  "forceExportAllVerbose": true,
+  "forceExportAll": false,
+  "forceExportAllVerbose": false,
   "placeInternalsInOwningModule":true,
-  "excludePrivateClassFields": false,
-  "excludePrivate": false,
-  "excludeProtected": false,
+  "excludePrivateClassFields": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
   "excludeExternals": true,
+  "excludeInternal": true, 
   "jsDocCompatibility": {
     "exampleTag": true,
     "defaultTag": true,
@@ -31,4 +29,3 @@
     "ignoreUnescapedBraces": true
 }
 }
-// typedoc-comments

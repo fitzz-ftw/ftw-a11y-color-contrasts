@@ -9,8 +9,8 @@
     ],
   },
   "include": [
-    "src/**/*.js"
-    // "docssrc/**/*"
+    "../src/**/*.js"
+    // "../docssrc/**/*"
   ],
   // "exclude": [
   //   "doc/**/*"
