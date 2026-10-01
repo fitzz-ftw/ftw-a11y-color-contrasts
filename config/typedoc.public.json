@@ -4,12 +4,13 @@
   "out": "../docs/publicapi",
   "exclude":["../src/**/*.test.js", "../src/**/*.browser-test.js"],
   "tsconfig": "./tsconfig.public.json",
-  "gitRemote": "local",
+  "gitRemote": "origin",
+  "sourceLinkTemplate": "https://github.com/fitzz-ftw/a11y-color-components/blob/{gitRevision}/{path}#L{line}",
   "readme": "../README.md",
   "plugin": [
     "typedoc-plugin-missing-exports",
     "typedoc-plugin-coverage",
-    "../utils/typedoc-plugin-smart-docs.js"
+    "../scripts/typedoc-plugin-smart-docs.js"
   ],
   "logLevel":"Info",
   "excludeTestMembers": true,

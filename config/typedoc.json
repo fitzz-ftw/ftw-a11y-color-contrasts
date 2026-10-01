@@ -12,7 +12,7 @@
   "plugin": [
     "typedoc-plugin-missing-exports",
     "typedoc-plugin-coverage",
-    "../utils/typedoc-plugin-smart-docs.js"
+    "../scripts/typedoc-plugin-smart-docs.js"
   ],
   "logLevel": "Info",
   "excludeTestMembers": false,

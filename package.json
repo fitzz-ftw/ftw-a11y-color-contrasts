@@ -1,5 +1,5 @@
 {
-  "name": "a11y-color-contrasts",
+  "name": "@fitzz-ftw/a11y-color-contrasts",
   "version": "1.0.0",
   "main": "./dist/a11y-color-components.umd.cjs",
   "module": "./dist/a11y-color-components.js",
@@ -16,9 +16,9 @@
   "scripts": {
     "dev": "vite --config config/vite.config.mjs ",
     "build": "vite --config config/vite.config.mjs build",
-    "test": "vitest --config config/vite.config.mjs ; ./utils/move-htmlreport.py",
-    "test:run": "vitest --config config/vite.config.mjs run ; ./utils/move-htmlreport.py",
-    "test:coverage": "vitest --config config/vite.config.mjs  run --coverage ; ./utils/move-htmlreport.py",
+    "test": "vitest --config config/vite.config.mjs ",
+    "test:run": "vitest --config config/vite.config.mjs run ",
+    "test:coverage": "vitest --config config/vite.config.mjs  run --coverage ",
     "lint": "eslint --config config/.eslintrc.js src/**/*.js",
     "format": "prettier --config config/prettier.config.js --write src/**/*.js",
     "docs": "typedoc --options config/typedoc.json",
@@ -36,6 +36,14 @@
   "author": "Fitzz TeXnik Welt <FitzzTeXnikWelt@t-online.de>",
   "license": "ISC",
   "description": "A lightweight, framework-agnostic web component library for selecting WCAG-compliant accessible color pairs",
+  "homepage": "https://fitzz-ftw.github.io/a11y-color-components/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fitzz-ftw/a11y-color-components.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fitzz-ftw/a11y-color-components/issues"
+  },
   "peerDependencies": {
     "culori": "^4.0.2"
   },

@@ -1,0 +1,42 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    # WICHTIG: Diese Permission erlaubt GitHub, das temporäre OIDC-Token 
+    # für das Trusted Publishing auf npm zu generieren.
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Falls du ein Build-Skript hast (z.B. Vite, das deine Source-Dateien in einen dist/-Ordner baut), 
+      # aktiviere die nächsten beiden Zeilen:
+      # - name: Install dependencies & build
+      #   run: |
+      #     npm ci
+      #     npm run build
+
+      # Wenn du keinen Build-Schritt brauchst und direkt den Quellcode veröffentlichst:
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package (Vite)
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public

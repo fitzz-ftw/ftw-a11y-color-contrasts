@@ -154,7 +154,7 @@ describe('HTMLColorControl (Web Designer BDD Perspective)', () => {
 
     control = /** @type {HTMLColorControl}*/(document.getElementById("c1"));
 
-    expect(eventDetail.text.new).toBe("Beispieltext für Barrierefreiheit");
+    expect(eventDetail.text.new).toBe("Accessibility sample text");
     expect(eventDetail.eventsource).toBe('initial');
 
 

@@ -1,4 +1,35 @@
 // typedoc-plugin-smart-docs.js
+/**
+ * @packageDocumentation
+ * 
+ * Custom TypeDoc Smart Docs Plugin.
+ * 
+ * This plugin extends TypeDoc with custom options to control the visibility and inclusion 
+ * of symbols and test members during documentation generation.
+ * 
+ * ## Custom TypeDoc Options
+ * 
+ * - `forceExportAll` (Boolean): 
+ *   Treats all declarations within modules/namespaces as exported, even if they lack an explicit `export` keyword.
+ * - `forceExportAllVerbose` (Boolean): 
+ *   Logs detailed information about each symbol that was forcibly exported to the console.
+ * - `excludeTestMembers` (Boolean, default: `true`): 
+ *   Automatically filters out and removes any reflections (functions, variables, etc.) starting with the prefix `test_`.
+ * - `excludeTestMembersVerbose` (Boolean): 
+ *   Logs detailed information about each removed test member to the console.
+ * 
+ * ## Example Configuration (`typedoc.json`)
+ * 
+ * ```json
+ * {
+ *   "plugin": ["./scripts/typedoc-plugin-smart-docs.js"],
+ *   "forceExportAll": true,
+ *   "forceExportAllVerbose": false,
+ *   "excludeTestMembers": true,
+ *   "excludeTestMembersVerbose": false
+ * }
+ * ```
+ */
 
 import { Converter, TypeScript } from "typedoc";
 

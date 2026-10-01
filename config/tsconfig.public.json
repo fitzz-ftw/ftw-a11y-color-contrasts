@@ -10,9 +10,8 @@
   },
   "include": [
     "../src/**/*.js"
-    // "docssrc/**/*"
   ],
-  // "exclude": [
-  //   "doc/**/*"
-  // ],
-}
+  "exclude": [
+    "../node_modules",
+    "../dist"
+  ]}

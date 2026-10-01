@@ -1,6 +1,6 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vitest/config';
-import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite'
+import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite';
 import PluginInspect from 'vite-plugin-inspect';
 import { resolve } from 'path';
 
@@ -30,10 +30,18 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 
         'html', 
-        // 'lcov'
+        'json-summary', 
+        'json'
       ],
       // all: true, // Erzwingt, dass auch ungetestete Dateien im Report auftauchen
       reportsDirectory: './docs/html/coverage',
+      reportOnFailure: true,
+      thresholds: {
+        lines: 80,
+        branches: 80,
+        functions: 80,
+        statements: 80
+      },
     },
     reporters: [
       "default",
