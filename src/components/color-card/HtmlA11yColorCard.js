@@ -39,6 +39,7 @@ import { ColorContrastPairs, noneDarker, noneLighter } from "../../utils/ColorCo
 // @ts-ignore
 import modulecss from '../components.css?inline' with { type: 'css' };
 
+
 /**
  * The CSSStylesheet for the shadowroot.
  *
@@ -77,46 +78,46 @@ if (typeof modulecss == "string") {
 
 const template =/*html*/`
 <div class="card-container test-card">
-  <div class="badge">Normaler Text (Ziel: &ge; 4.5:1)</div>
+  <div class="badge">Normal Text (Target: &ge; 4.5:1)</div>
   <div class="examples-grid">
-    <p class="header">Fehl.</p>
+    <p class="header">CVD</p>
     <p class="header">Ratio</p>
-    <p class="header">Ansicht</p>
-    <p class="row-header">keine</p>
+    <p class="header">Preview</p>
+    <p class="row-header">none</p>
     <p class="row-ratio none">00.0%</p>
     <p
       class="text-content sample-normal contr-45 wcga"
     >
-      Beispieltext für Barrierefreiheit
+    Accessibility sample text
     </p>
-    <p class="row-header">rot</p>
+    <p class="row-header">red</p>
     <p class="row-ratio red">4.5%</p>
 
     <p
       class="text-content sample-red contr-45 wcga-cdv-red"
     >
-      Beispieltext für Barrierefreiheit
+    Accessibility sample text
     </p>
-    <p class="row-header">grün</p>
+    <p class="row-header">green</p>
     <p class="row-ratio green">4.5%</p>
     <p
       class="text-content sample-green contr-45 wcga-cdv-green"
     >
-      Beispieltext für Barrierefreiheit
+      Accessibility sample text
     </p>
-    <p class="row-header">blau</p>
+    <p class="row-header">blue</p>
     <p class="row-ratio blue">4.5%</p>
     <p
       class="text-content sample-blue contr-45 wcga-cdv-blue"
     >
-      Beispieltext für Barrierefreiheit
+      Accessibility sample text
     </p>
     <p class="row-header">color</p>
     <p class="row-ratio color">4.5%</p>
     <p
       class="text-content sample-color contr-45 wcga-cdv-color"
     >
-      Beispieltext für Barrierefreiheit
+      Accessibility sample text
     </p>
   </div>
   <div class="contrast-readout normal45">
@@ -128,7 +129,7 @@ const template =/*html*/`
     <div class="hsl">color1</div>
   </div>
   <label for="lum-slider">
-    Helligkeit (Lum):
+  Luminance:
   </label>
   <input
       type="range"
@@ -701,19 +702,6 @@ export class HTMLA11yColorCard extends HTMLElement {
      * @type {import("culori").Hsl}
      */
     const hslfg = /** @type {import("culori").Hsl} */(hsl(fg));
-    // switch (type) {
-    //   case "hue":
-    //     hslfg.h = this.#curColor.hue;
-    //     fg = /** @type {string} */(formatHex(hslfg));
-    //     break;
-    //   case "sat":
-    //     hslfg.s = this.#curColor.sat;
-    //     fg = /** @type {string} */(formatHex(hslfg));
-    //     break;
-    //   /* c8 ignore next */
-    //   default:
-    //     break;
-    // }
     switch (type) {
       case "sat":
         hslfg.s = this.#curColor.sat;
@@ -855,7 +843,7 @@ export class HTMLA11yColorCard extends HTMLElement {
    * @param {number} value - The contast value.
    */
   #createHeader(value) {
-    const header = `${this.#fontMode} Text(target: ≥ ${value.toFixed(1)}: 1)`;
+    const header = `${this.#fontMode} Text - ${this.#colorMode} (target: ≥ ${value.toFixed(1)}: 1) `;
     // @ts-ignore
     this.#root.querySelector(".badge").textContent = header;
   }

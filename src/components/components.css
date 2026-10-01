@@ -174,7 +174,7 @@ div.gray {
 
 .examples-grid {
   display: grid;
-  grid-template-columns: 6ch 6ch auto;
+  grid-template-columns: 6ch 8ch auto;
   gap: 6px;
   align-items: center;
 }

@@ -26,10 +26,16 @@
     "docs:public": "typedoc --options config/typedoc.public.json",
     "docs:json": "typedoc --options config/typedoc.json --json docs/debug-out.json --pretty"
   },
-  "keywords": [],
+  "keywords": [
+    "web-components",
+    "accessibility",
+    "wcag",
+    "color-contrast",
+    "hsl"
+  ],
   "author": "Fitzz TeXnik Welt <FitzzTeXnikWelt@t-online.de>",
   "license": "ISC",
-  "description": "",
+  "description": "A lightweight, framework-agnostic web component library for selecting WCAG-compliant accessible color pairs",
   "peerDependencies": {
     "culori": "^4.0.2"
   },
@@ -46,7 +52,6 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.12.0",
     "happy-dom": "^20.14.5",
-    "jsdom": "^29.1.1",
     "prettier": "^3.9.9",
     "typedoc": "^0.28.20",
     "typedoc-plugin-coverage": "^4.0.3",

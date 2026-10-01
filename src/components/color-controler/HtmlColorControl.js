@@ -109,11 +109,11 @@ export const ControlEventEnum = Object.freeze({
  * @extends {Event}
  */
 export class ConfigChangeEvent extends Event {
-  
+
   /**
    * @type {OnChangeDetail} detail
    */
-  #detail; 
+  #detail;
   /**
    * @param {OnChangeDetail} detail - The change event details.
    */
@@ -123,16 +123,16 @@ export class ConfigChangeEvent extends Event {
       composed: true, // Wichtig, wenn das Event aus dem Shadow DOM heraus bubbled!
       cancelable: true
     });
-    this.#detail= detail;
-    }
-  
+    this.#detail = detail;
+  }
+
   /**
    * Get all properties of the {@link HTMLColorControl} 
    *  with old and new values.
    * 
    * @returns {OnChangeDetail} The change event details.
    */
-  get detail(){
+  get detail() {
     return this.#detail;
   }
 
@@ -146,7 +146,7 @@ export class ConfigChangeEvent extends Event {
 const template =/*html*/`
 <form class="test-card"id="control-form">
   <label class="row">
-    Grundfarbe (CSS-String oder Picker):
+  Base color (CSS string or picker):
     <div class="controls-color">
       <input id="color-input" type="text" name="baseColorText" value="#18fbf8" />
       <input id="color-picker" aria-label="testcolorpicker" type="color" name="baseColorPicker" value="#18fbf8" />
@@ -154,13 +154,13 @@ const template =/*html*/`
   </label>
 
   <label class="row">
-    Vorschautext:
-    <input id="preview-text" type="text" name="previewText" value="Beispieltext für Barrierefreiheit" />
+  Preview text:
+    <input id="preview-text" type="text" name="previewText" value="Accessibility sample text" />
   </label>
 
-  <label for="font-select">Schriftart:</label>
+  <label for="font-select">Font family:</label>
   <select name="fontFamily" id="font-select">
-    <option value="system-ui, sans-serif">System UI (Standard)</option>
+    <option value="system-ui, sans-serif">System UI (Default)</option>
     <option value="'Inter', sans-serif">Inter</option>
     <option value="'Fira Code', monospace">Fira Code (Monospace)</option>
     <option value="Georgia, serif">Georgia (Serif)</option>
@@ -168,13 +168,13 @@ const template =/*html*/`
   </select>
 
   <label for="hue-slider" >
-    Farbton-Winkel (Hue): <span id="hue-value">140</span>°
+  Hue angle: <span id="hue-value">140</span>°
   </label>
   <div class="container-slider colored" >
     <input class="colored" id="hue-slider" type="range" name="hue" min="0" max="360" value="140" />
   </div>
   <label for="sat-slider">
-    Farbsättigung (Sat): <span id="sat-value">50%</span>
+  Saturation: <span id="sat-value">50%</span>
   </label>
   <div class="container-slider gray" >
     <input id="sat-slider" type="range" name="sat" min="0" max="1" step="0.01" value="0.5" />
@@ -704,7 +704,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_root() {
     return this.#root;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -714,7 +714,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_hueSlider() {
     return this.#hueSlider;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -724,7 +724,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_hueValueDisplay() {
     return this.#hueValueDisplay;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -734,7 +734,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_satSlider() {
     return this.#satSlider;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -744,7 +744,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_satValueDisplay() {
     return this.#satValueDisplay;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -754,7 +754,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_colorInput() {
     return this.#colorInput;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -764,7 +764,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_colorPicker() {
     return this.#colorPicker;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -774,7 +774,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_previewText() {
     return this.#previewText;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -784,7 +784,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_fontFamily() {
     return this.#fontFamily;
   }
-  
+
   /**
    * Description placeholder
    *
@@ -794,7 +794,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_connectedCardIds() {
     return [...this.#connectedCards.keys()];
   }
-  
+
   /**
    * Description placeholder
    *
@@ -804,7 +804,7 @@ export class HTMLColorControl extends HTMLElement {
   get test_changeDetail() {
     return this.#changeDetail;
   }
-  
+
   /** 
    * 
   * @group Testing
