@@ -26,7 +26,7 @@ jobs:
       run: npm ci
 
     - name: Run Tests & Coverage
-      run: npm run test:coverage:ci # Dein dedizierter CI-Befehl
+      run: npm run test:coverage # Dein dedizierter CI-Befehl
 
     - name: Report Coverage
       if: always() 
