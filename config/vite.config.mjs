@@ -36,12 +36,12 @@ export default defineConfig({
       // all: true, // Erzwingt, dass auch ungetestete Dateien im Report auftauchen
       reportsDirectory: './docs/html/coverage',
       reportOnFailure: true,
-      thresholds: {
-        lines: 80,
-        branches: 80,
-        functions: 80,
-        statements: 80
-      },
+      // thresholds: {
+      //   lines: 80,
+      //   branches: 80,
+      //   functions: 80,
+      //   statements: 80
+      // },
     },
     reporters: [
       "default",

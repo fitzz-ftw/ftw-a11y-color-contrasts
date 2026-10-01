@@ -33,6 +33,6 @@ jobs:
       uses: davelosert/vitest-coverage-report-action@v2
       with:
         vite-config-path: './config/vite.config.mjs'
-        json-summary-path: './docs/html/coverarge/coverage-summary.json'
-        json-final-path: './docs/html/coverarge/coverage-final.json'
+        json-summary-path: './docs/html/coverage/coverage-summary.json'
+        json-final-path: './docs/html/coverage/coverage-final.json'
         threshold-icons: "{0: '🔴', 80: '🟠', 90: '🟢'}"
