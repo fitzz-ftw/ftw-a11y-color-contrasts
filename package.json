@@ -36,13 +36,13 @@
   "author": "Fitzz TeXnik Welt <FitzzTeXnikWelt@t-online.de>",
   "license": "ISC",
   "description": "A lightweight, framework-agnostic web component library for selecting WCAG-compliant accessible color pairs",
-  "homepage": "https://fitzz-ftw.github.io/a11y-color-contrasts/",
+  "homepage": "https://fitzz-ftw.github.io/ftw-a11y-color-contrasts/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fitzz-ftw/a11y-color-contrasts"
+    "url": "git+https://github.com/fitzz-ftw/ftw-a11y-color-contrasts.git"
   },
   "bugs": {
-    "url": "https://github.com/fitzz-ftw/a11y-color-contrasts/issues"
+    "url": "https://github.com/fitzz-ftw/ftw-a11y-color-contrasts/issues"
   },
   "peerDependencies": {
     "culori": "^4.0.2"

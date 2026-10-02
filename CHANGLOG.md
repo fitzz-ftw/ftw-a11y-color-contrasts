@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.1] - 2026-10-02
 
 ### Changed
-- **Build & Package:** Aligned built asset filenames in the `dist/` directory with the package name (`a11y-color-contrasts`), ensuring full consistency across the repository name, npm package scope, and documentation.
+- **Build & Package:** Aligned built asset filenames in the `dist/` directory with the package name (`ftw- a11y-color-contrasts`), ensuring full consistency across the repository name, npm package scope, and documentation.
 
 ## [1.0.0] - 2026-10-01
 
