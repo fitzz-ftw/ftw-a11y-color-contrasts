@@ -39,7 +39,7 @@
   "homepage": "https://fitzz-ftw.github.io/a11y-color-contrasts/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fitzz-ftw/a11y-color-contrasts.git"
+    "url": "https://github.com/fitzz-ftw/a11y-color-contrasts"
   },
   "bugs": {
     "url": "https://github.com/fitzz-ftw/a11y-color-contrasts/issues"
